@@ -1,0 +1,49 @@
+.Admin {
+  width: 100%;
+  padding-top: 5rem;
+}
+.sideNavContainer {
+  display: flex;
+  justify-content: center;
+  grid-gap: 2rem;
+  padding-bottom: 5rem;
+  font-size: 2rem;
+  color: blue;
+}
+
+.allRooms {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10rem;
+}
+.Rooms {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.roomInfo {
+  width: 80rem;
+  border: 2px solid black;
+  padding: 2rem;
+}
+.roomInfo h2 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-size: 2rem;
+}
+.roomInfo p {
+  font-size: 2rem;
+}
+.roomInfo div {
+  display: flex;
+  justify-content: baseline;
+  align-items: center;
+  grid-gap: 2rem;
+  padding-top: 3rem;
+}
+.uploads {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

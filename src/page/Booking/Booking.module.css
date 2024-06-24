@@ -1,0 +1,82 @@
+.Booking {
+  width: 100%;
+}
+.bookingContainer {
+  width: 100%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.bookingHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 10rem;
+}
+.bookingHeader h2 {
+  font-size: 4rem;
+  font-weight: bold;
+}
+.orderBlock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15rem;
+  grid-gap: 5rem;
+  width: 80%;
+}
+.orderBlockImg {
+  width: 100%;
+}
+.orderInfo {
+  width: 100%;
+  padding: 2rem;
+  border: 2px solid black;
+  border-radius: 1.4rem;
+}
+.orderInfo div {
+  grid-gap: 3rem;
+}
+
+.orderInfo h2 {
+  font-weight: 700;
+  font-size: 20px;
+  padding-bottom: 2.5rem;
+  color: black;
+}
+.orderInfo p {
+  font-size: 18px;
+  padding-bottom: 1.5rem;
+  margin-bottom: 4rem;
+}
+@media (max-width: 1000px) {
+  .bookingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .orderBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .orderBlockImg {
+    display: flex;
+    justify-content: center;
+    width: 70rem;
+  }
+}
+@media (max-width: 750px) {
+  .orderBlockImg {
+    width: 40rem;
+  }
+}
+@media (max-width: 500px) {
+  .orderBlockImg {
+    width: 30rem;
+  }
+}

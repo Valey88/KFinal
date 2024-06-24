@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-size: calc(100vw / 1920 * 10);
+}
+@media (max-width: 1024px) {
+  :root {
+    font-size: calc(100vw / 768 * 10);
+  }
+}
+@media (max-width: 767px) {
+  :root {
+    font-size: calc(100vw / 500 * 10);
+  }
+}
+@media (max-width: 500px) {
+  :root {
+    font-size: calc(100vw / 360 * 10);
+  }
+}
+ul {
+  list-style: none;
+}
+
+button {
+  width: 24rem;
+  height: 6rem;
+  border: none;
+  background-color: #f59c33;
+  color: #fff;
+  border-radius: 0.5rem;
+  font-size: 2rem;
+}
+
+body {
+  font-family: "inter" serif;
+  background-color: #fff;
+}
+
+/* input {
+  border: none;
+  width: 40rem;
+  height: 4rem;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 2.5rem;
+  padding: 0.5rem;
+  border: 0.3rem solid #f59c33;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+/* textarea {
+  background-color: grey;
+} */
+
+.my-slider {
+  width: 50rem;
+}
+.slider-wrapper {
+  width: 50rem;
+  height: 50rem;
+}

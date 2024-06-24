@@ -1,0 +1,173 @@
+.header {
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 2rem;
+  height: 7vw;
+  background-color: Greyscale/Black 100;
+  z-index: 1;
+  padding: 0 5rem;
+}
+.headerLogo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 0 1.3rem;
+}
+.headerLogo {
+  font-size: 3rem;
+  color: #3b90fb;
+}
+.headerNav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.headerNavList {
+  display: flex;
+  list-style-type: none;
+  grid-gap: 0 2.5rem;
+}
+.headerNavItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 0.4rem;
+}
+.headerNavItem a {
+  color: #3b90fb;
+  font-size: 1.8rem;
+  font-weight: light;
+}
+.headerMenu {
+  display: none;
+}
+.headerButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 0 1rem;
+}
+.headerButton a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #023affcc;
+  width: 21rem;
+  height: 5rem;
+  color: #fff;
+  font-size: 2rem;
+  border-radius: 1rem;
+}
+.headerButtonMobile {
+  display: none;
+}
+.headerButtonMobile a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #023affcc;
+  width: 21rem;
+  height: 5rem;
+  color: #fff;
+  font-size: 2rem;
+  border-radius: 1rem;
+}
+.logo2 {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 0 5rem;
+  }
+  .logo1 {
+    display: block;
+  }
+  .logo2 {
+    display: none;
+  }
+  .header {
+    height: 20vw;
+  }
+  .headerNav {
+    position: fixed;
+    top: 12rem;
+    left: -32rem;
+    display: flex;
+    justify-content: center;
+    width: 32rem;
+    height: 70%;
+    background-color: #fff;
+    border: 0.2rem solid #f59c33;
+    border-top-right-radius: 1.6rem;
+    border-bottom-right-radius: 1.6rem;
+    padding-left: 0px;
+    align-items: center;
+    transition: transform 0, 3s linear;
+  }
+  .headerButtonMobile {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 1.5rem;
+  }
+
+  .headerNav.active {
+    transform: translateX(100%);
+  }
+  .headerNavList {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    grid-gap: 3rem;
+  }
+  .headerButton {
+    display: none;
+  }
+  .headerButton button {
+    width: 15rem;
+  }
+  .headerMenu {
+    display: block;
+    margin-left: auto;
+    margin-right: 4rem;
+    background: none;
+    border: none;
+  }
+
+  .headerMenu button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    background: transparent;
+    border: none;
+    outline: none;
+  }
+  .headerMenu button:hover {
+    background: none;
+    border: none;
+  }
+  .headerButton {
+    margin-left: 0rem;
+  }
+}
+@media (max-width: 500px) {
+  .header {
+    padding: 0 2.5rem;
+  }
+  .logo1 {
+    display: none;
+  }
+  .logo2 {
+    display: block;
+  }
+  .headerLogo h2 {
+    font-size: 2rem;
+  }
+}

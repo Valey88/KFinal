@@ -1,0 +1,27 @@
+.DeleteImage {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.images {
+  width: 10rem;
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 20px;
+}
+.sideNavContainer {
+  display: flex;
+  grid-gap: 2rem;
+  padding-bottom: 5rem;
+  font-size: 2rem;
+  color: blue;
+}

@@ -1,0 +1,18 @@
+.sideNav {
+  width: 25rem;
+  height: 35rem;
+
+  left: 0;
+  overflow-x: hidden;
+  background-color: #f59c33;
+  border-radius: 0px 5rem 5rem 0px;
+}
+
+.sideNavContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  grid-gap: 3rem;
+  padding-top: 5rem;
+}
