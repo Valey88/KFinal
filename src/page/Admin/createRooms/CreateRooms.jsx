@@ -10,7 +10,6 @@ const CreateRooms = () => {
   const [address, setAddress] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState(0);
   const [places, setPlaces] = useState(0);
   // const [addRooms, { isError }] = useAddRoomsMutation();
   const [weekDays, setWeekDays] = useState([]);
@@ -58,12 +57,21 @@ const CreateRooms = () => {
   //     setTimesEnd("");
   //   }
   // };
+
+  const weeks = [
+    { day: "Пн" },
+    { day: "Вт" },
+    { day: "Ср" },
+    { day: "Чт" },
+    { day: "Пт" },
+    { day: "Сб" },
+    { day: "Вс" },
+  ];
   const addNewRoom = async () => {
     console.log({
       address,
       name,
       description,
-      price,
       places,
       timeStart,
       timeEnd,
@@ -77,34 +85,27 @@ const CreateRooms = () => {
           address,
           name,
           description,
-          price,
           places,
           timeStart,
           timeEnd,
-          weekDays,
+          weekDays, // Отправляем weekDays напрямую
         },
         {
           withCredentials: true,
         }
       );
+
       setAddress("");
       setName("");
       setDescription("");
-      setPrice("");
       setPlaces("");
-      setWeekDays([]);
+      setWeekDays([]); // Очищаем weekDays после успешной отправки
       setTimeStart("");
       setTimesEnd("");
     } catch (error) {
       console.log("Error:", error);
       // Handle login error
     }
-  };
-
-  const handleWeekDaysChange = (e) => {
-    const value = e.target.value;
-    const weekDays = value.split(",").map((day) => day.trim());
-    setWeekDays(weekDays);
   };
 
   return (
@@ -133,12 +134,6 @@ const CreateRooms = () => {
             onChange={(e) => setName(e.target.value)}
             className={style.inputAddRooms}
           />
-          <input
-            type="text"
-            placeholder="Цена"
-            onChange={(e) => setPrice(+e.target.value)}
-            className={style.inputAddRooms}
-          />
           <textarea
             type="text"
             placeholder="Описание"
@@ -151,14 +146,32 @@ const CreateRooms = () => {
             onChange={(e) => setPlaces(+e.target.value)}
             className={style.inputAddRooms}
           />
-          <input
-            type="text"
-            placeholder="Дни недели работы"
-            value={weekDays.join(", ")}
-            onChange={handleWeekDaysChange}
-            className={style.inputAddRooms}
-          />
-
+          <h2 style={{ fontSize: 18 }}>
+            Выберите дни недели, которые комната будет работать:
+          </h2>
+          <div className={style.weekDaysContainer}>
+            {weeks.map((item) => (
+              <div key={item.day} className={style.weekDaysItem}>
+                <input
+                  className={style.weekDaysCheckbox}
+                  type="checkbox"
+                  value={item.day}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setWeekDays((prev) => [...prev, e.target.value]);
+                    }
+                    if (!e.target.checked) {
+                      setWeekDays((prev) =>
+                        prev.filter((day) => day !== e.target.value)
+                      );
+                    }
+                    console.log(weekDays);
+                  }}
+                />
+                {item.day}
+              </div>
+            ))}
+          </div>
           <input
             type="text"
             placeholder="Начало работы"

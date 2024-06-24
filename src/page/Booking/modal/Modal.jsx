@@ -96,8 +96,9 @@ export default function BasicModal({ id }) {
   const addNewOrder = async () => {
     console.log({
       roomId,
+      // Преобразуем объект Date в строку с помощью toLocaleString()
       timeStart,
-      duration, // Отправляем duration как число
+      duration,
       summaryEvent,
       fio,
       email,
@@ -109,8 +110,9 @@ export default function BasicModal({ id }) {
         "http://localhost:3000/order/create-order",
         {
           roomId,
+          // Отправляем timeStart как строку в нужном формате
           timeStart,
-          duration, // Отправляем duration как число
+          duration,
           summaryEvent,
           fio,
           email,
@@ -124,17 +126,6 @@ export default function BasicModal({ id }) {
     } catch (error) {
       console.log("Error:", error);
       // Handle login error
-    }
-  };
-
-  const handleDurationChange = (value) => {
-    const [hours, minutes] = value.split(":").map(Number);
-
-    if (!isNaN(hours) && !isNaN(minutes)) {
-      const totalMinutes = hours * 60 + minutes;
-      setDuration(totalMinutes);
-    } else {
-      setDuration("");
     }
   };
 
@@ -160,9 +151,9 @@ export default function BasicModal({ id }) {
               <h2>Продолжительность события</h2>
               <input
                 className={styles.modalInput}
-                placeholder="Пример ввода 5:30"
+                placeholder="Пример ввода 1 "
                 type="text"
-                onChange={(e) => handleDurationChange(e.target.value)}
+                onChange={(e) => setDuration(+e.target.value)}
               />
               <textarea
                 className={styles.modalTextarea}

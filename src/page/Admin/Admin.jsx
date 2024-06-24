@@ -21,6 +21,8 @@ function AddRooms() {
   const [data, setData] = useState();
   const [pictures, setPictures] = useState();
   const [orders, setOrders] = useState([]);
+  const [queryParams, setQueryParams] = useState({});
+
   useEffect(() => {
     fetchRooms();
   }, []);
@@ -120,14 +122,49 @@ function AddRooms() {
 
   // Define the variable
 
-  axios
-    .get("http://localhost:3000/order/get-all-orders", {
-      withCredentials: true,
-    })
-    .then((response) => {
-      setOrders(response.data);
-    });
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/order/get-all-orders",
+        {
+          params: queryParams,
+          withCredentials: true,
+        }
+      );
+      setOrders(response.data);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
+  const handleFilterChange = (filter, value) => {
+    setQueryParams((prevParams) => {
+      const newParams = { ...prevParams };
+
+      if (newParams[filter] === value) {
+        // Если значение фильтра уже установлено, удалить его
+        delete newParams[filter];
+      } else {
+        // Иначе, установить новое значение фильтра
+        newParams[filter] = value;
+      }
+
+      return newParams;
+    });
+  };
+
+  // const handleFilterReset = () => {
+  //   setQueryParams({});
+  //   fetchOrders(); // Выполнить GET-запрос без фильтров
+  // };
+
+  const handleApplyFilter = () => {
+    fetchOrders(); // Выполнить GET-запрос с применением фильтров
+  };
   return (
     <div className={style.Admin}>
       <div>
@@ -139,7 +176,16 @@ function AddRooms() {
       </div>
       <div className={style.allRooms}>
         <div className={style.allRoomsContainer}>
-          <h1>Список комнат</h1>
+          <h1
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              fontSize: "30px",
+              paddingBottom: "30px",
+            }}
+          >
+            Список комнат
+          </h1>
           {rooms?.map((data) => {
             return (
               <div className={style.Rooms} key={data.id}>
@@ -199,43 +245,123 @@ function AddRooms() {
               </div>
             );
           })}
-          <div>
-            <h1>Список заказов</h1>
-            {orders?.map((item) => {
-              const formatDate = (dateString) => {
-                const date = new Date(dateString);
-                const day = date.getDate().toString().padStart(2, "0");
-                const month = (date.getMonth() + 1).toString().padStart(2, "0");
-                const year = date.getFullYear();
-                const hours = date.getHours().toString().padStart(2, "0");
-                const minutes = date.getMinutes().toString().padStart(2, "0");
-                return `День ${day}.${month}.${year} Время окончания : ${hours}:${minutes}`;
-              };
-              const formatDates = (dateString) => {
-                const date = new Date(dateString);
-                const day = date.getDate().toString().padStart(2, "0");
-                const month = (date.getMonth() + 1).toString().padStart(2, "0");
-                const year = date.getFullYear();
-                const hours = date.getHours().toString().padStart(2, "0");
-                const minutes = date.getMinutes().toString().padStart(2, "0");
-                return `День ${day}.${month}.${year} Время начало : ${hours}:${minutes}`;
-              };
-              const formattedTimeEnd = formatDate(item.timeEnd);
-              const formattedStart = formatDates(item.timeStart);
-              return (
-                <div key={item.id}>
-                  <h2>{item.fio}</h2>
-                  <h2>{item.phoneNumber}</h2>
-                  <h2>{item.email}</h2>
-                  <h2>{formattedStart}</h2>
-                  <h2>{formattedTimeEnd}</h2>
-                  <h2>Комната номер : {item.roomId}</h2>
-                  <button onClick={(e) => deleteOrder(item.id)}>
-                    Удалить бронь
-                  </button>
-                </div>
-              );
-            })}
+          <div className={style.orders}>
+            <h1
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "30px",
+                padding: "30px",
+              }}
+            >
+              Список заказов
+            </h1>
+            <h1
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "30px",
+                paddingBottom: "30px",
+              }}
+            >
+              Фильтрация
+            </h1>
+            <div className={style.filter}>
+              <div className={style.filterItem}>
+                <label>
+                  <input
+                    className={style.checkbox}
+                    type="checkbox"
+                    checked={queryParams.time === "DECREASING"}
+                    onChange={() => handleFilterChange("time", "DECREASING")}
+                  />
+                  Время по убыванию
+                </label>
+                <label>
+                  <input
+                    className={style.checkbox}
+                    type="checkbox"
+                    checked={queryParams.time === "INCREASING"}
+                    onChange={() => handleFilterChange("time", "INCREASING")}
+                  />
+                  Время по возрастанию
+                </label>
+                <input
+                  className={style.filterInput}
+                  type="text"
+                  placeholder="Введите номер комнаты"
+                  value={queryParams.roomId || ""}
+                  onChange={(e) => handleFilterChange("roomId", e.target.value)}
+                />
+              </div>
+              {/* <button onClick={handleFilterReset}>Сбросить фильтр</button> */}
+              <button onClick={handleApplyFilter}>Применить фильтр</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ФИО</th>
+                  <th>Номер телефона</th>
+                  <th>Email</th>
+                  <th>Время начала</th>
+                  <th>Время окончания</th>
+                  <th>Номер комнаты</th>
+                  <th>Действие</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders?.map((item) => {
+                  const formatDate = (dateString) => {
+                    const date = new Date(dateString);
+                    const day = date.getDate().toString().padStart(2, "0");
+                    const month = (date.getMonth() + 1)
+                      .toString()
+                      .padStart(2, "0");
+                    const year = date.getFullYear();
+                    const hours = date.getHours().toString().padStart(2, "0");
+                    const minutes = date
+                      .getMinutes()
+                      .toString()
+                      .padStart(2, "0");
+                    return `Время окончания : ${hours}:${minutes}`;
+                  };
+
+                  const formatDates = (dateString) => {
+                    const date = new Date(dateString);
+                    const day = date.getDate().toString().padStart(2, "0");
+                    const month = (date.getMonth() + 1)
+                      .toString()
+                      .padStart(2, "0");
+                    const year = date.getFullYear();
+                    const hours = date.getHours().toString().padStart(2, "0");
+                    const minutes = date
+                      .getMinutes()
+                      .toString()
+                      .padStart(2, "0");
+                    return `Дата ${day}.${month}.${year}\nВремя начало: ${hours}:${minutes}`;
+                  };
+
+                  const formattedTimeEnd = formatDate(item.timeEnd);
+                  const formattedStart = formatDates(item.timeStart);
+
+                  return (
+                    <tr key={item.id}>
+                      <td>{item.fio}</td>
+                      <td>{item.phoneNumber}</td>
+                      <td>{item.email}</td>
+                      <td>{formattedStart}</td>
+                      <td>{formattedTimeEnd}</td>
+                      <td>Комната номер : {item.roomId}</td>
+                      <td>
+                        <button onClick={(e) => deleteOrder(item.id)}>
+                          Удалить бронь
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
