@@ -7,6 +7,8 @@ import { useState } from "react";
 // import { usePostOrdersMutation } from "../../../redux/dataApi";
 import styles from "./Modal.module.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const style = {
   position: "absolute",
@@ -21,16 +23,19 @@ const style = {
   boxShadow: 24,
   p: 4,
   width: {
-    "@media (max-width: 500px)": {
-      width: "350px",
-    },
     "@media (max-width: 2000px)": {
       width: "450px",
+    },
+    "@media (max-width: 500px)": {
+      width: "320px",
     },
   },
   height: {
     "@media (max-width: 500px)": {
       height: "800px",
+    },
+    "@media (max-width: 500px)": {
+      height: "620px",
     },
   },
 };
@@ -51,52 +56,9 @@ export default function BasicModal({ id }) {
 
   console.log(roomId);
 
-  // const addNewOrder = async () => {
-  //   console.log({
-  //     roomId,
-  //     timeStart,
-  //     durationHours,
-  //     durationMinuts,
-  //     summaryEvent,
-  //     fio,
-  //     email,
-  //     phoneNumber,
-  //   });
-  //   if (
-  //     roomId &&
-  //     timeStart &&
-  //     durationHours &&
-  //     durationMinuts &&
-  //     summaryEvent &&
-  //     summaryEvent &&
-  //     fio &&
-  //     email &&
-  //     phoneNumber
-  //   ) {
-  //     await postOrders({
-  //       roomId,
-  //       timeStart,
-  //       durationHours,
-  //       durationMinuts,
-  //       summaryEvent,
-  //       fio,
-  //       email,
-  //       phoneNumber,
-  //     }).unwrap();
-  //     setRoomId("");
-  //     setTimeStart("");
-  //     setDurationHours("");
-  //     setDurationMinuts("");
-  //     setSummaryEvent("");
-  //     setFio("");
-  //     setEmail("");
-  //     setPhoneNumber("");
-  //   }
-  // };
   const addNewOrder = async () => {
     console.log({
       roomId,
-      // Преобразуем объект Date в строку с помощью toLocaleString()
       timeStart,
       duration,
       summaryEvent,
@@ -110,7 +72,6 @@ export default function BasicModal({ id }) {
         "http://localhost:3000/order/create-order",
         {
           roomId,
-          // Отправляем timeStart как строку в нужном формате
           timeStart,
           duration,
           summaryEvent,
@@ -122,10 +83,34 @@ export default function BasicModal({ id }) {
           withCredentials: true,
         }
       );
-      // ... остальной код
+
+      // Показать всплывающее окно об успешной отправке
+      toast.success("Заявка успешно отправлена!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
       console.log("Error:", error);
-      // Handle login error
+
+      // Показать всплывающее окно об ошибке
+      toast.error(
+        error.response.data.message ||
+          "Произошла ошибка при отправке заявки. Пожалуйста, попробуйте еще раз.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     }
   };
 
@@ -148,7 +133,7 @@ export default function BasicModal({ id }) {
                 type="datetime-local"
                 onChange={(e) => setTimeStart(e.target.value)}
               />
-              <h2>Продолжительность события</h2>
+              <h2 className={styles.letter}>Продолжительность события</h2>
               <input
                 className={styles.modalInput}
                 placeholder="Пример ввода 1 "
@@ -179,7 +164,13 @@ export default function BasicModal({ id }) {
                 defaultValue="+7"
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
-              <button className={styles.modalButton} onClick={addNewOrder}>
+              <button
+                className={styles.modalButton}
+                onClick={async () => {
+                  await addNewOrder();
+                  handleClose(); // Закрываем модальное окно после отправки
+                }}
+              >
                 Отправить
               </button>
             </div>

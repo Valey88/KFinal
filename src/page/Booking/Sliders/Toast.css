@@ -1,0 +1,5 @@
+.Toastify__toast {
+  width: 400px; /* Ширина всплывающего окна */
+  height: 100px;
+  font-size: 1.5rem;
+}

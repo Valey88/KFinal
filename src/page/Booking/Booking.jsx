@@ -11,6 +11,9 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import "./Sliders/styles.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./Sliders/Toast.css";
 
 // import required modules
 import {
@@ -30,6 +33,7 @@ const Booking = () => {
         <div className={style.bookingHeader}>
           <h2>Бронирование</h2>
         </div>
+        <ToastContainer />
         {data?.map((data) => {
           return (
             <div className={style.orderBlock} key={data.id}>

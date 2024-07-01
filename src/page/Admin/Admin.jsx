@@ -3,6 +3,7 @@ import style from "./Admin.module.css";
 import axios from "axios";
 import SideBar from "../../components/sideBar/SideBar";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Modal from "./modal/Modal";
 
 // Import Swiper styles
 import "swiper/css";
@@ -22,6 +23,9 @@ function AddRooms() {
   const [pictures, setPictures] = useState();
   const [orders, setOrders] = useState([]);
   const [queryParams, setQueryParams] = useState({});
+  const [timeStart, setTimeStart] = useState("");
+  const [timeEnd, setTimeEnd] = useState("");
+  const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
     fetchRooms();
@@ -165,6 +169,28 @@ function AddRooms() {
   const handleApplyFilter = () => {
     fetchOrders(); // Выполнить GET-запрос с применением фильтров
   };
+
+  const handleUpdateOrder = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/order/update-order/${id}`,
+        {
+          timeStart,
+          timeEnd,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className={style.Admin}>
       <div>
@@ -356,6 +382,7 @@ function AddRooms() {
                         <button onClick={(e) => deleteOrder(item.id)}>
                           Удалить бронь
                         </button>
+                        <Modal id={item.id} />
                       </td>
                     </tr>
                   );
