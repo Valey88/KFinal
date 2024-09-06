@@ -9,6 +9,7 @@ import styles from "./Modal.module.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { url } from "../../../constants/constants";
 
 const style = {
   position: "absolute",
@@ -69,7 +70,7 @@ export default function BasicModal({ id }) {
 
     try {
       await axios.post(
-        "http://localhost:3000/order/create-order",
+        `${url}/order/create-order`,
         {
           roomId,
           timeStart,

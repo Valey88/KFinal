@@ -15,52 +15,69 @@ import { Link } from "react-router-dom";
 
 // import required modules
 import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
+import { url } from "../../constants/constants";
 
+import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
+import useAdminStore from "../../store/adminStore";
+
+export const useLogoutAdmin = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    document.cookie =
+      "accesstoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("userRole");
+    navigate("/");
+  };
+
+  return handleLogout;
+};
 function AddRooms() {
   const [file, setFile] = useState(null);
-  const [rooms, setRooms] = useState([]);
+  const [roomsImg, setRoomsImg] = useState([]);
   const [data, setData] = useState();
   const [pictures, setPictures] = useState();
-  const [orders, setOrders] = useState([]);
+  // const [orders, setOrders] = useState([]);
   const [queryParams, setQueryParams] = useState({});
   const [timeStart, setTimeStart] = useState("");
   const [timeEnd, setTimeEnd] = useState("");
   const [orderId, setOrderId] = useState("");
+  const { rooms, orders, fetchRooms, deleteRoom, fetchOrders } =
+    useAdminStore();
 
   useEffect(() => {
     fetchRooms();
+    fetchOrders();
   }, []);
 
-  const fetchRooms = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/room/get-all-rooms",
-        {
-          withCredentials: true,
-        }
-      );
-      setRooms(response.data);
-    } catch (error) {
-      console.log("Error fetching rooms:", error);
-    }
-  };
+  // const fetchRooms = async () => {
+  //   try {
+  //     const response = await axios.get(`${url}/room/get-all-rooms`, {
+  //       withCredentials: true,
+  //     });
+  //     setRooms(response.data);
+  //   } catch (error) {
+  //     console.log("Error fetching rooms:", error);
+  //   }
+  // };
 
-  const deleteRoom = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/room/delete-room/${id}`, {
-        withCredentials: true,
-      });
-      console.log("Room deleted successfully! 😊");
-      // Обновить список комнат после успешного удаления
-      fetchRooms();
-    } catch (error) {
-      console.log("Error:", error);
-      // Обработать ошибку удаления комнаты
-    }
-  };
+  // const deleteRoom = async (id) => {
+  //   try {
+  //     await axios.delete(`${url}/room/delete-room/${id}`, {
+  //       withCredentials: true,
+  //     });
+  //     console.log("Room deleted successfully! 😊");
+  //     // Обновить список комнат после успешного удаления
+  //     fetchRooms();
+  //   } catch (error) {
+  //     console.log("Error:", error);
+  //     // Обработать ошибку удаления комнаты
+  //   }
+  // };
   const deleteOrder = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/order/delete-order/${id}`, {
+      await axios.delete(`${url}/order/delete-order/${id}`, {
         withCredentials: true,
       });
       console.log("Order deleted successfully! 😊");
@@ -74,76 +91,69 @@ function AddRooms() {
     setFile(event.target.files[0]);
   };
 
-  // const handleFileChanges = (id) => {
-  //   const formData = new FormData();
-  //   formData.append("image", file);
-  //   axios.post(
-  //     `http://localhost:3000/room/upload-picture/${id}`,
-  //     formData,
-  //     {
-  //       withCredentials: true,
-  //     },
-  //     {
-  //       method: "POST",
-  //       headers: { "Content-type": "multipart/form-data" },
-  //     }
-  //   );
-  // };
   const updatePictureList = () => {
     // Здесь вы можете обновить список картинок
     // Например, если у вас есть состояние `pictures`, вы можете обновить его следующим образом:
     setPictures(data?.picture);
   };
-
   const handleFileChanges = async (id) => {
     const formData = new FormData();
     formData.append("image", file);
 
     try {
       // Загрузка картинки
-      await axios.post(
-        `http://localhost:3000/room/upload-picture/${id}`,
-        formData,
+      await axios.post(`${url}/room/upload-picture/${id}`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      // Получение обновленных данных комнаты
+      const updatedRoomResponse = await axios.get(
+        `${url}/room/get-room/${id}`,
         {
           withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
         }
       );
 
-      // Получение обновленных данных комнаты
-      const [updatedRoom] = await Promise.all([
-        axios.get(`http://localhost:3000/room/get-room/${id}`, {
-          withCredentials: true,
-        }),
-      ]);
-
       // Обновление состояния с новыми данными комнаты
-      setData(updatedRoom.data);
+      setRoomsImg((prevRooms) =>
+        prevRooms.map((room) =>
+          room.id === id
+            ? { ...room, picture: updatedRoomResponse.data.picture }
+            : room
+        )
+      );
+
+      // Сброс состояния файла
+      setFile(null);
     } catch (error) {
       console.log("Error:", error);
     }
   };
-
   // Define the variable
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  const fetchOrders = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/order/get-all-orders",
-        {
-          params: queryParams,
-          withCredentials: true,
-        }
-      );
-      setOrders(response.data);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
+  // const fetchOrders = useCallback(async () => {
+  //   try {
+  //     const response = await axios.get(`${url}/order/get-all-orders`, {
+  //       params: queryParams,
+  //       withCredentials: true,
+  //     });
+  //     setOrders(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching orders:", error);
+  //   }
+  // }, [queryParams]);
+
+  useEffect(() => {
+    fetchOrders();
+    const intervalId = setInterval(fetchOrders, 5000); // Fetch orders every 5 seconds
+
+    return () => clearInterval(intervalId); // Clean up on component unmount
+  }, [fetchOrders]);
 
   const handleFilterChange = (filter, value) => {
     setQueryParams((prevParams) => {
@@ -175,7 +185,7 @@ function AddRooms() {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/order/update-order/${id}`,
+        `${url}/order/update-order/${id}`,
         {
           timeStart,
           timeEnd,
@@ -191,6 +201,8 @@ function AddRooms() {
     }
   };
 
+  const handleLogout = useLogoutAdmin();
+
   return (
     <div className={style.Admin}>
       <div>
@@ -198,6 +210,7 @@ function AddRooms() {
           <Link to="/CreateRooms">Создание Команты</Link>
           <Link to="/Admin">Список комнат</Link>
           <Link to="/DeleteImage">Удаление изображений</Link>
+          <button onClick={handleLogout}>Выйти</button>
         </div>
       </div>
       <div className={style.allRooms}>
@@ -231,7 +244,7 @@ function AddRooms() {
                       const imgBlob = new Blob([img.data]);
                       return (
                         <SwiperSlide key={img.id}>
-                          <img src={`http://localhost:3000/${img.name}`} />
+                          <img src={`${url}/${img.name}`} />
                         </SwiperSlide>
                       );
                     })}
@@ -280,20 +293,20 @@ function AddRooms() {
                 padding: "30px",
               }}
             >
-              Список заказов
+              Список броней
             </h1>
-            <h1
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                fontSize: "30px",
-                paddingBottom: "30px",
-              }}
-            >
-              Фильтрация
-            </h1>
+
             <div className={style.filter}>
               <div className={style.filterItem}>
+                <h1
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    fontSize: "30px",
+                  }}
+                >
+                  Фильтрация:
+                </h1>
                 <label>
                   <input
                     className={style.checkbox}
@@ -338,36 +351,42 @@ function AddRooms() {
               <tbody>
                 {orders?.map((item) => {
                   const formatDate = (dateString) => {
-                    const date = new Date(dateString);
-                    const day = date.getDate().toString().padStart(2, "0");
-                    const month = (date.getMonth() + 1)
-                      .toString()
-                      .padStart(2, "0");
-                    const year = date.getFullYear();
-                    const hours = date.getHours().toString().padStart(2, "0");
-                    const minutes = date
-                      .getMinutes()
-                      .toString()
-                      .padStart(2, "0");
-                    return `Время окончания : ${hours}:${minutes}`;
+                    const formatDate = (dateString) => {
+                      const date = new Date(dateString);
+                      const options = {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        timeZone: "UTC",
+                      };
+                      return `Время окончания: ${date.toLocaleTimeString(
+                        "ru-RU",
+                        options
+                      )}`;
+                    };
                   };
 
                   const formatDates = (dateString) => {
                     const date = new Date(dateString);
-                    const day = date.getDate().toString().padStart(2, "0");
-                    const month = (date.getMonth() + 1)
-                      .toString()
-                      .padStart(2, "0");
-                    const year = date.getFullYear();
-                    const hours = date.getHours().toString().padStart(2, "0");
-                    const minutes = date
-                      .getMinutes()
-                      .toString()
-                      .padStart(2, "0");
-                    return `Дата ${day}.${month}.${year}\nВремя начало: ${hours}:${minutes}`;
+                    const options = {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      timeZone: "UTC",
+                    };
+                    const formattedDates = date.toLocaleDateString(
+                      "ru-RU",
+                      options
+                    );
+                    const formattedTime = date.toLocaleTimeString("ru-RU", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      timeZone: "UTC",
+                    });
+                    return `Дата ${formattedDates}\nВремя начала: ${formattedTime}`;
                   };
-
-                  const formattedTimeEnd = formatDate(item.timeEnd);
+                  const formattedTimeEnd = formatDates(item.timeEnd);
                   const formattedStart = formatDates(item.timeStart);
 
                   return (
@@ -378,8 +397,15 @@ function AddRooms() {
                       <td>{formattedStart}</td>
                       <td>{formattedTimeEnd}</td>
                       <td>Комната номер : {item.roomId}</td>
-                      <td>
-                        <button onClick={(e) => deleteOrder(item.id)}>
+                      <td style={{ display: "flex", gap: "10px" }}>
+                        <button
+                          style={{
+                            width: "150px",
+                            padding: "10px",
+                            fontSize: "15px",
+                          }}
+                          onClick={(e) => deleteOrder(item.id)}
+                        >
                           Удалить бронь
                         </button>
                         <Modal id={item.id} />

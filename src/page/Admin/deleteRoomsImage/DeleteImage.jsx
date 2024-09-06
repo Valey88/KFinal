@@ -5,6 +5,7 @@ import style from "./DeleteImage.module.css";
 // import { useDeletePictureMutation } from "../../../redux/dataApi";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { url } from "../../../constants/constants";
 
 const DeleteImage = () => {
   const { data } = useGetRoomsQuery();
@@ -15,7 +16,7 @@ const DeleteImage = () => {
   // };
   const deletePictures = async (name) => {
     try {
-      await axios.delete(`http://localhost:3000/room/delete-picture/${name}`, {
+      await axios.delete(`${url}/room/delete-picture/${name}`, {
         withCredentials: true,
       });
       console.log("Picture deleted successfully! 😊");
@@ -37,13 +38,15 @@ const DeleteImage = () => {
         {data?.map((data) => {
           return (
             <div key={data.id}>
-              <h2>{data.address}</h2>
-              <h2>{data.name}</h2>
+              <div className={style.titleRoom}>
+                <h2>Название комнаты:</h2>
+                <p style={{ fontSize: "30px" }}>{data.name}</p>
+              </div>
               {data?.picture?.map((img) => {
                 const imgBlob = new Blob([img.data]);
                 return (
                   <div className={style.images}>
-                    <img src={`http://localhost:3000/${img.name}`} />
+                    <img src={`${url}/${img.name}`} />
                     <button onClick={() => deletePictures(img.name)}>
                       Удалить
                     </button>
@@ -53,7 +56,7 @@ const DeleteImage = () => {
 
               {/* {data?.picture?.map((img) => {
                   const imgBlob = new Blob([img.data]);
-                  return <img src={`http://localhost:3000/${img.name}`} />;
+                  return <img src={`${url}/${img.name}`} />;
                 })} */}
             </div>
           );

@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { url } from "../constants/constants";
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3000/",
+  baseUrl: `${url}/`,
   prepareHeaders: (headers, { getState }) => {
     const token = localStorage.getItem("token");
 
@@ -13,7 +15,7 @@ const baseQuery = fetchBaseQuery({
 });
 export const dataApi = createApi({
   reducerPath: "dataApi/api",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${url}/` }),
   tagTypes: ["Rooms", "Pictures"],
   endpoints: (builder) => ({
     getRooms: builder.query({

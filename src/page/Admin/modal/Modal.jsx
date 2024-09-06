@@ -9,6 +9,7 @@ import styles from "./Modal.module.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { url } from "../../../constants/constants";
 
 const style = {
   position: "absolute",
@@ -24,7 +25,7 @@ const style = {
   p: 4,
   width: {
     "@media (max-width: 2000px)": {
-      width: "450px",
+      width: "650px",
     },
     "@media (max-width: 500px)": {
       width: "320px",
@@ -51,7 +52,7 @@ export default function BasicModal({ id }) {
   const handleUpdateOrder = async (e) => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/order/update-order/${orderId}`,
+        `${url}/order/update-order/${orderId}`,
         {
           timeStart,
           timeEnd,
@@ -69,7 +70,15 @@ export default function BasicModal({ id }) {
 
   return (
     <div>
-      <button className={styles.modalButton} onClick={handleOpen}>
+      <button
+        style={{
+          width: "150px",
+          padding: "10px",
+          fontSize: "15px",
+        }}
+        className={styles.modalButton}
+        onClick={handleOpen}
+      >
         Редактировать
       </button>
       <Modal
@@ -80,19 +89,60 @@ export default function BasicModal({ id }) {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            <div className={styles.modalContainer}>
-              <input
-                type="datetime-local"
-                placeholder="Time Start"
-                value={timeStart}
-                onChange={(e) => setTimeStart(e.target.value)}
-              />
-              <input
-                type="datetime-local"
-                placeholder="Time End"
-                value={timeEnd}
-                onChange={(e) => setTimeEnd(e.target.value)}
-              />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+              className={styles.modalContainer}
+            >
+              <h2>Редактирование</h2>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "10px",
+                  alignItems: "center",
+                }}
+              >
+                <h3>Начало</h3>
+                <input
+                  style={{
+                    width: "100%",
+                    border: "1px solid black",
+                    padding: "10px",
+                    borderRadius: "10px",
+                  }}
+                  type="datetime-local"
+                  placeholder="Time Start"
+                  value={timeStart}
+                  onChange={(e) => setTimeStart(e.target.value)}
+                />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "10px",
+                  alignItems: "center",
+                }}
+              >
+                <h3>Конец</h3>
+                <input
+                  style={{
+                    width: "100%",
+                    border: "1px solid black",
+                    padding: "10px",
+                    borderRadius: "10px",
+                  }}
+                  type="datetime-local"
+                  placeholder="Time End"
+                  value={timeEnd}
+                  onChange={(e) => setTimeEnd(e.target.value)}
+                />
+              </div>
               <button onClick={(e) => handleUpdateOrder()}>Сохранить</button>
             </div>
           </Typography>

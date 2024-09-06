@@ -11,12 +11,18 @@
   align-items: center;
 }
 .images {
-  width: 10rem;
-  height: 10rem;
+  width: 50rem;
+  height: 25rem;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  grid-gap: 20px;
+  grid-gap: 100px;
+  padding-top: 10rem;
+}
+.images img {
+  width: 40rem;
+  height: 20rem;
+}
+.images button {
+  width: 200px;
 }
 .sideNavContainer {
   display: flex;
@@ -24,4 +30,13 @@
   padding-bottom: 5rem;
   font-size: 2rem;
   color: blue;
+}
+.titleRoom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 30px;
+}
+.titleRoom h2 {
+  font-size: 30px;
 }

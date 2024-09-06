@@ -1,63 +1,23 @@
 import React from "react";
 import style from "./CreateRooms.module.css";
-// import { useAddRoomsMutation } from "../../../redux/dataApi";
 import { useState } from "react";
 import SideBar from "../../../components/sideBar/SideBar";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { url } from "../../../constants/constants";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+//используемые хуки
 
 const CreateRooms = () => {
   const [address, setAddress] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [places, setPlaces] = useState(0);
-  // const [addRooms, { isError }] = useAddRoomsMutation();
   const [weekDays, setWeekDays] = useState([]);
   const [timeStart, setTimeStart] = useState("");
   const [timeEnd, setTimesEnd] = useState("");
-
-  // const addNewRoom = async () => {
-  //   console.log({
-  //     address,
-  //     name,
-  //     description,
-  //     price,
-  //     places,
-  //     timeStart,
-  //     timeEnd,
-  //     weeks,
-  //   });
-  //   if (
-  //     address &&
-  //     name &&
-  //     description &&
-  //     price &&
-  //     places &&
-  //     timeStart &&
-  //     timeEnd &&
-  //     weeks
-  //   ) {
-  //     await addRooms({
-  //       address,
-  //       name,
-  //       description,
-  //       price,
-  //       places,
-  //       timeStart,
-  //       timeEnd,
-  //       weeks,
-  //     }).unwrap();
-  //     setAddress("");
-  //     setName("");
-  //     setDescription("");
-  //     setPrice("");
-  //     setPlaces("");
-  //     setWeeks([]);
-  //     setTimeStart("");
-  //     setTimesEnd("");
-  //   }
-  // };
-
   const weeks = [
     { day: "Пн" },
     { day: "Вт" },
@@ -67,6 +27,8 @@ const CreateRooms = () => {
     { day: "Сб" },
     { day: "Вс" },
   ];
+
+  //функция добавления новой комнаты
   const addNewRoom = async () => {
     console.log({
       address,
@@ -80,7 +42,7 @@ const CreateRooms = () => {
 
     try {
       await axios.post(
-        "http://localhost:3000/room/add-room",
+        `${url}/room/add-room`,
         {
           address,
           name,
@@ -94,7 +56,32 @@ const CreateRooms = () => {
           withCredentials: true,
         }
       );
+      toast.success("Комната успешно создана!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.log("Error:", error);
 
+      // Показать всплывающее окно об ошибке
+      toast.error(
+        error.response.data.message ||
+          "Произошла ошибка при отправке создании комнаты. Пожалуйста, попробуйте еще раз.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
       setAddress("");
       setName("");
       setDescription("");
@@ -102,11 +89,10 @@ const CreateRooms = () => {
       setWeekDays([]); // Очищаем weekDays после успешной отправки
       setTimeStart("");
       setTimesEnd("");
-    } catch (error) {
-      console.log("Error:", error);
-      // Handle login error
     }
   };
+
+  //верстка
 
   return (
     <div className={style.CreateRooms}>
@@ -185,6 +171,7 @@ const CreateRooms = () => {
             className={style.inputAddRooms}
           />
           <button onClick={addNewRoom}>Создать</button>
+          <ToastContainer />
         </div>
       </div>
     </div>
