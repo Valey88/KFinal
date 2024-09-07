@@ -20,6 +20,7 @@ import { url } from "../../constants/constants";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import useAdminStore from "../../store/adminStore";
+import { useRef } from "react";
 
 export const useLogoutAdmin = () => {
   const navigate = useNavigate();
@@ -39,17 +40,26 @@ function AddRooms() {
   const [data, setData] = useState();
   const [pictures, setPictures] = useState();
   // const [orders, setOrders] = useState([]);
-  const [queryParams, setQueryParams] = useState({});
+  // const [queryParams, setQueryParams] = useState({});
   const [timeStart, setTimeStart] = useState("");
   const [timeEnd, setTimeEnd] = useState("");
   const [orderId, setOrderId] = useState("");
-  const { rooms, orders, fetchRooms, deleteRoom, fetchOrders } =
-    useAdminStore();
+  
+  const {
+    rooms,
+    orders,
+    fetchRooms,
+    deleteRoom,
+    fetchOrders,
+    updateRoom,
+    queryParams,
+    setQueryParams,
+  } = useAdminStore();
 
   useEffect(() => {
     fetchRooms();
-    fetchOrders();
-  }, []);
+    fetchOrders(queryParams);
+  }, [queryParams]);
 
   // const fetchRooms = async () => {
   //   try {
@@ -75,15 +85,32 @@ function AddRooms() {
   //     // Обработать ошибку удаления комнаты
   //   }
   // };
+
+  const handleFilterChange = (filter, value) => {
+    setQueryParams((prevParams) => {
+      const newParams = { ...prevParams };
+      if (newParams[filter] === value) {
+        delete newParams[filter];
+      } else {
+        newParams[filter] = value;
+      }
+      return newParams;
+    });
+  };
+
+  const handleApplyFilter = () => {
+    fetchOrders(queryParams);
+  };
+
   const deleteOrder = async (id) => {
     try {
       await axios.delete(`${url}/order/delete-order/${id}`, {
         withCredentials: true,
       });
       console.log("Order deleted successfully! 😊");
+      fetchOrders(queryParams); // Refresh orders after deletion
     } catch (error) {
       console.log("Error:", error);
-      // Обработать ошибку удаления комнаты
     }
   };
 
@@ -96,18 +123,53 @@ function AddRooms() {
     // Например, если у вас есть состояние `pictures`, вы можете обновить его следующим образом:
     setPictures(data?.picture);
   };
+  // const handleFileChanges = async (id) => {
+  //   const formData = new FormData();
+  //   formData.append("image", file);
+
+  //   try {
+  //     // Загрузка картинки
+  //     await axios.post(`${url}/room/upload-picture/${id}`, formData, {
+  //       withCredentials: true,
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+
+  //     // Получение обновленных данных комнаты
+  //     const updatedRoomResponse = await axios.get(
+  //       `${url}/room/get-room/${id}`,
+  //       {
+  //         withCredentials: true,
+  //       }
+  //     );
+
+  //     // Обновление состояния с новыми данными комнаты
+  //     setRoomsImg((prevRooms) =>
+  //       prevRooms.map((room) =>
+  //         room.id === id
+  //           ? { ...room, picture: updatedRoomResponse.data.picture }
+  //           : room
+  //       )
+  //     );
+
+  //     // Сброс состояния файла
+  //     setFile(null);
+  //   } catch (error) {
+  //     console.log("Error:", error);
+  //   }
+  // };
+  // Define the variable
+  const fileInputRef = useRef(null);
+
   const handleFileChanges = async (id) => {
+    if (!file) return;
+
     const formData = new FormData();
     formData.append("image", file);
 
     try {
-      // Загрузка картинки
-      await axios.post(`${url}/room/upload-picture/${id}`, formData, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await updateRoom(id, formData);
 
-      // Получение обновленных данных комнаты
+      // Fetch the updated room data
       const updatedRoomResponse = await axios.get(
         `${url}/room/get-room/${id}`,
         {
@@ -115,22 +177,23 @@ function AddRooms() {
         }
       );
 
-      // Обновление состояния с новыми данными комнаты
-      setRoomsImg((prevRooms) =>
-        prevRooms.map((room) =>
-          room.id === id
-            ? { ...room, picture: updatedRoomResponse.data.picture }
-            : room
-        )
+      // Update the local state
+      const updatedRooms = rooms.map((room) =>
+        room.id === id
+          ? { ...room, picture: updatedRoomResponse.data.picture }
+          : room
       );
+      useAdminStore.setState({ rooms: updatedRooms });
 
-      // Сброс состояния файла
+      // Reset the file state and input value
       setFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Error updating room:", error);
     }
   };
-  // Define the variable
 
   useEffect(() => {
     fetchOrders();
@@ -155,51 +218,51 @@ function AddRooms() {
     return () => clearInterval(intervalId); // Clean up on component unmount
   }, [fetchOrders]);
 
-  const handleFilterChange = (filter, value) => {
-    setQueryParams((prevParams) => {
-      const newParams = { ...prevParams };
+  // const handleFilterChange = (filter, value) => {
+  //   setQueryParams((prevParams) => {
+  //     const newParams = { ...prevParams };
 
-      if (newParams[filter] === value) {
-        // Если значение фильтра уже установлено, удалить его
-        delete newParams[filter];
-      } else {
-        // Иначе, установить новое значение фильтра
-        newParams[filter] = value;
-      }
+  //     if (newParams[filter] === value) {
+  //       // Если значение фильтра уже установлено, удалить его
+  //       delete newParams[filter];
+  //     } else {
+  //       // Иначе, установить новое значение фильтра
+  //       newParams[filter] = value;
+  //     }
 
-      return newParams;
-    });
-  };
+  //     return newParams;
+  //   });
+  // };
 
   // const handleFilterReset = () => {
   //   setQueryParams({});
   //   fetchOrders(); // Выполнить GET-запрос без фильтров
   // };
 
-  const handleApplyFilter = () => {
-    fetchOrders(); // Выполнить GET-запрос с применением фильтров
-  };
+  // const handleApplyFilter = () => {
+  //   fetchOrders(); // Выполнить GET-запрос с применением фильтров
+  // };
 
-  const handleUpdateOrder = async (e) => {
-    e.preventDefault();
+  // const handleUpdateOrder = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      const response = await axios.put(
-        `${url}/order/update-order/${id}`,
-        {
-          timeStart,
-          timeEnd,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+  //   try {
+  //     const response = await axios.put(
+  //       `${url}/order/update-order/${id}`,
+  //       {
+  //         timeStart,
+  //         timeEnd,
+  //       },
+  //       {
+  //         withCredentials: true,
+  //       }
+  //     );
 
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const handleLogout = useLogoutAdmin();
 
@@ -269,8 +332,13 @@ function AddRooms() {
                   <h2>Цена {data.price}р</h2>
                   <div className={style.uploads}>
                     <h2>Загрузить фото:</h2>
-                    <input type="file" onChange={uploadFile} name="inputFile" />
-                    <button onClick={(e) => handleFileChanges(data.id)}>
+                    <input
+                      type="file"
+                      onChange={uploadFile}
+                      name="inputFile"
+                      ref={fileInputRef}
+                    />
+                    <button onClick={(e) => handleFileChanges(data.id, file)}>
                       Загрузить
                     </button>
                   </div>
@@ -350,45 +418,36 @@ function AddRooms() {
               </thead>
               <tbody>
                 {orders?.map((item) => {
-                  const formatDate = (dateString) => {
-                    const formatDate = (dateString) => {
-                      const date = new Date(dateString);
-                      const options = {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        timeZone: "UTC",
-                      };
-                      return `Время окончания: ${date.toLocaleTimeString(
-                        "ru-RU",
-                        options
-                      )}`;
-                    };
-                  };
-
-                  const formatDates = (dateString) => {
+                  const formatDateTime = (dateString) => {
                     const date = new Date(dateString);
+                    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  
                     const options = {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",
                       hour: "2-digit",
                       minute: "2-digit",
-                      timeZone: "UTC",
+                      timeZone: userTimeZone
                     };
-                    const formattedDates = date.toLocaleDateString(
-                      "ru-RU",
-                      options
-                    );
+
+                    const formattedDate = date.toLocaleDateString("ru-RU", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      timeZone: userTimeZone
+                    });
+
                     const formattedTime = date.toLocaleTimeString("ru-RU", {
                       hour: "2-digit",
                       minute: "2-digit",
-                      timeZone: "UTC",
+                      timeZone: userTimeZone
                     });
-                    return `Дата ${formattedDates}\nВремя начала: ${formattedTime}`;
-                  };
-                  const formattedTimeEnd = formatDates(item.timeEnd);
-                  const formattedStart = formatDates(item.timeStart);
 
+                    return `Дата: ${formattedDate}, Время: ${formattedTime}`;
+                  };
+                  const formattedTimeEnd = formatDateTime(item.timeEnd);
+                  const formattedStart = formatDateTime(item.timeStart);
                   return (
                     <tr key={item.id}>
                       <td>{item.fio}</td>

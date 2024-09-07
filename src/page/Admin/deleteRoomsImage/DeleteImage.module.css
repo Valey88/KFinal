@@ -14,8 +14,9 @@
   width: 50rem;
   height: 25rem;
   display: flex;
-  grid-gap: 100px;
-  padding-top: 10rem;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 20px;
 }
 .images img {
   width: 40rem;
@@ -39,4 +40,10 @@
 }
 .titleRoom h2 {
   font-size: 30px;
+}
+.delete_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
 }

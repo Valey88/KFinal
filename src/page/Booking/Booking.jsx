@@ -17,17 +17,21 @@ const Booking = () => {
   const [rooms, setRooms] = useState([]);
 
   const getRooms = () => {
-    return axios.get(`${url}/room/get-all-rooms`, { withCredentials: true })
-      .then(response => {
+    return axios
+      .get(`${url}/room/get-all-rooms`, { withCredentials: true })
+      .then((response) => {
         const result = response.data;
         if (result) {
-          const tags = [...result.map(({ id }) => ({ type: "Rooms", id })), "Rooms"];
+          const tags = [
+            ...result.map(({ id }) => ({ type: "Rooms", id })),
+            "Rooms",
+          ];
           return { data: result, tags };
         } else {
           return { data: result, tags: ["Rooms"] };
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error fetching rooms:", error);
         throw error;
       });
@@ -35,8 +39,8 @@ const Booking = () => {
 
   useEffect(() => {
     getRooms()
-      .then(result => setRooms(result.data))
-      .catch(error => console.error("Error setting rooms:", error));
+      .then((result) => setRooms(result.data))
+      .catch((error) => console.error("Error setting rooms:", error));
   }, []);
 
   return (
@@ -78,7 +82,6 @@ const Booking = () => {
               </div>
               <p>{data.description}</p>
               <p>Количество мест {data.places}</p>
-              <p>Цена {data.price}р</p>
               <div>
                 <Modal id={data.id} />
               </div>

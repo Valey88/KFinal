@@ -1,96 +1,30 @@
 import React from "react";
 import style from "./CreateRooms.module.css";
-import { useState } from "react";
-import SideBar from "../../../components/sideBar/SideBar";
-import axios from "axios";
 import { Link } from "react-router-dom";
-import { url } from "../../../constants/constants";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import useRoomStore from "../../../store/roomStore";
 //используемые хуки
 
 const CreateRooms = () => {
-  const [address, setAddress] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [places, setPlaces] = useState(0);
-  const [weekDays, setWeekDays] = useState([]);
-  const [timeStart, setTimeStart] = useState("");
-  const [timeEnd, setTimesEnd] = useState("");
-  const weeks = [
-    { day: "Пн" },
-    { day: "Вт" },
-    { day: "Ср" },
-    { day: "Чт" },
-    { day: "Пт" },
-    { day: "Сб" },
-    { day: "Вс" },
-  ];
-
-  //функция добавления новой комнаты
-  const addNewRoom = async () => {
-    console.log({
-      address,
-      name,
-      description,
-      places,
-      timeStart,
-      timeEnd,
-      weekDays,
-    });
-
-    try {
-      await axios.post(
-        `${url}/room/add-room`,
-        {
-          address,
-          name,
-          description,
-          places,
-          timeStart,
-          timeEnd,
-          weekDays, // Отправляем weekDays напрямую
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      toast.success("Комната успешно создана!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {
-      console.log("Error:", error);
-
-      // Показать всплывающее окно об ошибке
-      toast.error(
-        error.response.data.message ||
-          "Произошла ошибка при отправке создании комнаты. Пожалуйста, попробуйте еще раз.",
-        {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-      setAddress("");
-      setName("");
-      setDescription("");
-      setPlaces("");
-      setWeekDays([]); // Очищаем weekDays после успешной отправки
-      setTimeStart("");
-      setTimesEnd("");
-    }
-  };
+  const {
+    address,
+    name,
+    description,
+    places,
+    weekDays,
+    timeStart,
+    timeEnd,
+    weeks,
+    setAddress,
+    setName,
+    setDescription,
+    setPlaces,
+    setWeekDays,
+    setTimeStart,
+    setTimeEnd,
+    addNewRoom,
+  } = useRoomStore();
 
   //верстка
 
@@ -136,25 +70,15 @@ const CreateRooms = () => {
             Выберите дни недели, которые комната будет работать:
           </h2>
           <div className={style.weekDaysContainer}>
-            {weeks.map((item) => (
-              <div key={item.day} className={style.weekDaysItem}>
+            {weeks.map(({ day }) => (
+              <div key={day} className={style.weekDaysItem}>
                 <input
-                  className={style.weekDaysCheckbox}
+                  className={style.inputCheckbox}
                   type="checkbox"
-                  value={item.day}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setWeekDays((prev) => [...prev, e.target.value]);
-                    }
-                    if (!e.target.checked) {
-                      setWeekDays((prev) =>
-                        prev.filter((day) => day !== e.target.value)
-                      );
-                    }
-                    console.log(weekDays);
-                  }}
+                  checked={weekDays.includes(day)}
+                  onChange={() => setWeekDays(day)}
                 />
-                {item.day}
+                {day}
               </div>
             ))}
           </div>
@@ -167,7 +91,7 @@ const CreateRooms = () => {
           <input
             type="text"
             placeholder="Конец работы"
-            onChange={(e) => setTimesEnd(e.target.value)}
+            onChange={(e) => setTimeEnd(e.target.value)}
             className={style.inputAddRooms}
           />
           <button onClick={addNewRoom}>Создать</button>

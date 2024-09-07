@@ -37,10 +37,10 @@ const DeleteImage = () => {
       <div className={style.delete_image}>
         {data?.map((data) => {
           return (
-            <div key={data.id}>
+            <div className={style.delete_container} key={data.id}>
               <div className={style.titleRoom}>
-                <h2>Название комнаты:</h2>
-                <p style={{ fontSize: "30px" }}>{data.name}</p>
+                <h2>Название комнаты:{data.name}</h2>
+                <p style={{ fontSize: "30px" }}></p>
               </div>
               {data?.picture?.map((img) => {
                 const imgBlob = new Blob([img.data]);
@@ -53,11 +53,6 @@ const DeleteImage = () => {
                   </div>
                 );
               })}
-
-              {/* {data?.picture?.map((img) => {
-                  const imgBlob = new Blob([img.data]);
-                  return <img src={`${url}/${img.name}`} />;
-                })} */}
             </div>
           );
         })}
