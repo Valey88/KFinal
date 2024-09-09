@@ -25,12 +25,13 @@ const useRoomStore = create((set) => ({
   setName: (name) => set({ name }),
   setDescription: (description) => set({ description }),
   setPlaces: (places) => set({ places }),
-  setWeekDays: (day) => set((state) => {
-    const updatedWeekDays = state.weekDays.includes(day)
-      ? state.weekDays.filter((d) => d !== day)
-      : [...state.weekDays, day]
-    return { weekDays: updatedWeekDays }
-  }),
+  setWeekDays: (day) =>
+    set((state) => {
+      const updatedWeekDays = state.weekDays.includes(day)
+        ? state.weekDays.filter((d) => d !== day)
+        : [...state.weekDays, day];
+      return { weekDays: updatedWeekDays };
+    }),
   setTimeStart: (timeStart) => set({ timeStart }),
   setTimeEnd: (timeEnd) => set({ timeEnd }),
 
@@ -44,6 +45,17 @@ const useRoomStore = create((set) => ({
       timeStart: "",
       timeEnd: "",
     }),
+
+  fetchRooms: async () => {
+    try {
+      const response = await axios.get(`${url}/room/get-all-rooms`, {
+        withCredentials: true,
+      });
+      set({ rooms: response.data });
+    } catch (error) {
+      console.error("Error fetching rooms:", error);
+    }
+  },
 
   addNewRoom: async () => {
     const { address, name, description, places, timeStart, timeEnd, weekDays } =
@@ -107,6 +119,7 @@ const useRoomStore = create((set) => ({
         }
       );
     }
-  },}));
+  },
+}));
 
 export default useRoomStore;

@@ -12,36 +12,40 @@ import "react-toastify/dist/ReactToastify.css";
 import "./Sliders/Toast.css";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { url } from "../../constants/constants";
+import useRoomStore from "../../store/roomStore";
+import RoomCalendar from "../../components/calendar/Calendar";
 
 const Booking = () => {
-  const [rooms, setRooms] = useState([]);
+  const { rooms, fetchRooms } = useRoomStore();
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const getRooms = () => {
-    return axios
-      .get(`${url}/room/get-all-rooms`, { withCredentials: true })
-      .then((response) => {
-        const result = response.data;
-        if (result) {
-          const tags = [
-            ...result.map(({ id }) => ({ type: "Rooms", id })),
-            "Rooms",
-          ];
-          return { data: result, tags };
-        } else {
-          return { data: result, tags: ["Rooms"] };
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching rooms:", error);
-        throw error;
-      });
+  const formatTime = (timeString) => {
+    const [hours, minutes] = timeString.split("T")[1].slice(0, 5).split(":");
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    return date.toLocaleTimeString("ru-RU", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   useEffect(() => {
-    getRooms()
-      .then((result) => setRooms(result.data))
-      .catch((error) => console.error("Error setting rooms:", error));
-  }, []);
+    fetchRooms()
+      .then(() => {
+        console.log("Rooms fetched:", rooms);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching rooms:", error);
+        setLoading(false);
+      });
+  }, [fetchRooms]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={style.Booking}>
@@ -50,44 +54,51 @@ const Booking = () => {
           <h2>Бронирование</h2>
         </div>
 
-        {rooms.map((data) => (
-          <div className={style.orderBlock} key={data.id}>
-            <div className={style.orderBlockImg}>
-              <Swiper
-                slidesPerView={1}
-                spaceBetween={30}
-                autoplay={{
-                  delay: 2500,
-                  disableOnInteraction: false,
-                }}
-                loop={true}
-                pagination={{
-                  clickable: true,
-                }}
-                navigation={false}
-                modules={[Pagination, Navigation, Autoplay]}
-                className="mySwiper"
-              >
-                {data?.picture?.map((img) => (
-                  <SwiperSlide key={img.id}>
-                    <img src={`${url}/${img.name}`} alt={data.name} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-            <div className={style.orderInfo}>
-              <div>
-                <h2>{data.address}</h2>
-                <h2>{data.name}</h2>
+        {rooms && rooms.length > 0 ? (
+          rooms.map((data) => (
+            <div className={style.orderBlock} key={data.id}>
+              <div className={style.orderBlockImg}>
+                <Swiper
+                  slidesPerView={1}
+                  spaceBetween={30}
+                  autoplay={{
+                    delay: 2500,
+                    disableOnInteraction: false,
+                  }}
+                  loop={true}
+                  pagination={{
+                    clickable: true,
+                  }}
+                  navigation={false}
+                  modules={[Pagination, Navigation, Autoplay]}
+                  className="mySwiper"
+                >
+                  {data?.picture?.map((img) => (
+                    <SwiperSlide key={img.id}>
+                      <img src={`${url}/${img.name}`} alt={data.name} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
-              <p>{data.description}</p>
-              <p>Количество мест {data.places}</p>
-              <div>
-                <Modal id={data.id} />
+              <div className={style.orderInfo}>
+                <div>
+                  <h2>{data.address}</h2>
+                  <h2>{data.name}</h2>
+                </div>
+                <p>{data.description}</p>
+                <p>Количество мест {data.places}</p>
+                <p>Начало работы: {formatTime(data.timeStart)}</p>
+                <p>Конец работы: {formatTime(data.timeEnd)}</p>
+                <div>
+                  <Modal id={data.id} />
+                  <RoomCalendar />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div>No rooms available</div>
+        )}
       </div>
       <ToastContainer />
     </div>
