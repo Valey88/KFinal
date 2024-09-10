@@ -10,8 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@devexpress/dx-core": "^4.0.8",
+    "@devexpress/dx-react-core": "^4.0.8",
+    "@devexpress/dx-react-scheduler": "^4.0.8",
+    "@devexpress/dx-react-scheduler-material-ui": "^4.0.8",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "^6.0.2",
     "@mui/material": "^6.0.2",
     "@mui/styles": "^6.0.2",
@@ -31,10 +36,12 @@
     "react-big-calendar": "^1.13.4",
     "react-calendar": "^5.0.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.53.0",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.22.2",
     "react-scroll": "^1.9.0",
     "react-toastify": "^10.0.5",
+    "styled-components": "^6.1.13",
     "swiper": "^11.0.7",
     "zustand": "^4.5.5"
   },

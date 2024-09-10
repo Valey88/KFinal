@@ -1,0 +1,22 @@
+.dx-scheduler-appointment-content {
+  padding: 5px;
+}
+
+.dx-scheduler-appointment-content:hover::after {
+  content: attr(title);
+  position: absolute;
+  background: white;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 1000;
+}
+.Cell-dayOfWeek {
+  font-size: 20px !important;
+}
+
+@media (max-width: 600px) {
+  .dx-scheduler-navigator {
+    flex-direction: column;
+  }
+}

@@ -13,7 +13,7 @@ import "./Sliders/Toast.css";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { url } from "../../constants/constants";
 import useRoomStore from "../../store/roomStore";
-import RoomCalendar from "../../components/calendar/Calendar";
+import RoomCalendar from "../../components/shedulerCalendar/roomCalendar/RoomCalendar";
 
 const Booking = () => {
   const { rooms, fetchRooms } = useRoomStore();
@@ -91,7 +91,7 @@ const Booking = () => {
                 <p>Конец работы: {formatTime(data.timeEnd)}</p>
                 <div>
                   <Modal id={data.id} />
-                  <RoomCalendar />
+                  <RoomCalendar roomId={selectedRoomId} />
                 </div>
               </div>
             </div>

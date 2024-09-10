@@ -1,62 +1,94 @@
-.modalButton {
-  width: 100%;
-  height: 6rem;
+.bookButton {
+  padding: 12px 24px;
+  background-color: #4caf50;
+  color: white;
   border: none;
-  color: #fff;
-  border-radius: 0.5rem;
-  font-size: 2rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
-.modalContainer {
+.bookButton:hover {
+  background-color: #45a049;
+}
+
+.modalTitle {
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.form {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  width: 100%;
-  grid-gap: 2rem;
-}
-.modalContainer h2 {
-  font-size: 2.5rem;
-}
-.modalInput {
-  width: 100%;
-  border: 2px solid black;
-  height: 3rem;
-  border-radius: 15px;
-  font-size: 2rem;
-  padding: 2rem;
+  gap: 20px;
 }
 
-.modalTextarea {
-  width: 100%;
-  border: 2px solid black;
-  height: 12rem;
-  border-radius: 15px;
-  font-size: 2rem;
-  padding: 2rem;
+.inputGroup {
   display: flex;
-  align-items: center;
+  flex-direction: column;
 }
-@media (max-width: 400px) {
-  .modalContainer h2 {
-    font-size: 1.5rem;
+
+.inputGroup label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.error {
+  color: #ff4444;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.submitButton {
+  padding: 12px 24px;
+  color: black;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  align-self: center;
+  transition: background-color 0.3s ease;
+}
+.submitButton {
+  background: #45a049 !important;
+}
+
+@media (max-width: 600px) {
+  .input,
+  .textarea,
+  .submitButton {
+    font-size: 14px;
   }
-  .modalTextarea {
-    width: 27rem;
-    border: 2px solid black;
-    height: 10rem;
-    border-radius: 15px;
-    font-size: 1.5rem;
-    padding: 2rem;
-    display: flex;
-    align-items: center;
+
+  .modalTitle {
+    font-size: 20px;
   }
-  .modalInput {
-    width: 27rem;
-    border: 2px solid black;
-    height: 3rem;
-    border-radius: 15px;
-    font-size: 1.5rem;
-    padding: 2rem;
+
+  .form {
+    gap: 15px;
   }
 }
