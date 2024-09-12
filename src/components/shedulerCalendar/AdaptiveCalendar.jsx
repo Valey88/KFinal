@@ -148,6 +148,9 @@ const AdaptiveCalendar = ({ roomId }) => {
           backgroundColor: "#ff4d4d",
           borderRadius: "8px",
           cursor: "pointer",
+          width: isDesktop ? "60%" : "100%",
+          height: isDesktop ? "20px" : "100%",
+          marginTop: "2.5px",
           fontSize: isDesktop ? "3rem" : "1.5rem",
         }}
         onClick={() => handleAppointmentClick(data)}

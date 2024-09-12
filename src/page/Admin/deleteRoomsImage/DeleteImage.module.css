@@ -1,49 +1,109 @@
-.DeleteImage {
+.deleteImagePage {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sideNav {
+  width: 250px;
+  background-color: #f0f0f0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sideNav a {
+  margin-bottom: 10px;
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.sideNav a:hover {
+  background-color: #e0e0e0;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 20px;
+}
+
+.pageTitle {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.roomsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.roomCard {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.roomTitle {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.imageContainer {
+  position: relative;
+}
+
+.roomImage {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 5px;
 }
-.list {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+.deleteButton {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: auto;
 }
-.images {
-  width: 50rem;
-  height: 25rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  grid-gap: 20px;
+
+.deleteButton:hover {
+  background-color: #cc0000;
 }
-.images img {
-  width: 40rem;
-  height: 20rem;
-}
-.images button {
-  width: 200px;
-}
-.sideNavContainer {
-  display: flex;
-  grid-gap: 2rem;
-  padding-bottom: 5rem;
-  font-size: 2rem;
-  color: blue;
-}
-.titleRoom {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  grid-gap: 30px;
-}
-.titleRoom h2 {
-  font-size: 30px;
-}
-.delete_container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: column;
+
+@media (max-width: 768px) {
+  .deleteImagePage {
+    flex-direction: column;
+  }
+
+  .sideNav {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 10px;
+  }
+
+  .sideNav a {
+    margin-bottom: 0;
+  }
+
+  .roomsGrid {
+    grid-template-columns: 1fr;
+  }
 }

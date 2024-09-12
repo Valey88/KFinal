@@ -1,50 +1,20 @@
-import { useEffect, useState } from "react";
-import style from "./Admin.module.css";
-import axios from "axios";
-import SideBar from "../../components/sideBar/SideBar";
+import React, { useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import axios from "axios";
+import useAdminStore from "../../store/adminStore";
 import Modal from "./modal/Modal";
-
-// Import Swiper styles
+import { url } from "../../constants/constants";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
 import "../../page/Booking/Sliders/styles.css";
-import { Link } from "react-router-dom";
+import styles from "./Admin.module.css";
 
-// import required modules
-import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
-import { url } from "../../constants/constants";
-
-import { useNavigate } from "react-router-dom";
-import { useCallback } from "react";
-import useAdminStore from "../../store/adminStore";
-import { useRef } from "react";
-
-export const useLogoutAdmin = () => {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    document.cookie =
-      "accesstoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    localStorage.removeItem("userRole");
-    navigate("/");
-  };
-
-  return handleLogout;
-};
-function AddRooms() {
+function Admin() {
   const [file, setFile] = useState(null);
-  const [roomsImg, setRoomsImg] = useState([]);
   const [data, setData] = useState();
-  const [pictures, setPictures] = useState();
-  // const [orders, setOrders] = useState([]);
-  // const [queryParams, setQueryParams] = useState({});
-  const [timeStart, setTimeStart] = useState("");
-  const [timeEnd, setTimeEnd] = useState("");
-  const [orderId, setOrderId] = useState("");
-  
   const {
     rooms,
     orders,
@@ -54,6 +24,7 @@ function AddRooms() {
     updateRoom,
     queryParams,
     setQueryParams,
+    useLogoutAdmin
   } = useAdminStore();
 
   useEffect(() => {
@@ -61,44 +32,20 @@ function AddRooms() {
     fetchOrders(queryParams);
   }, [queryParams]);
 
-  // const fetchRooms = async () => {
-  //   try {
-  //     const response = await axios.get(`${url}/room/get-all-rooms`, {
-  //       withCredentials: true,
-  //     });
-  //     setRooms(response.data);
-  //   } catch (error) {
-  //     console.log("Error fetching rooms:", error);
-  //   }
-  // };
-
-  // const deleteRoom = async (id) => {
-  //   try {
-  //     await axios.delete(`${url}/room/delete-room/${id}`, {
-  //       withCredentials: true,
-  //     });
-  //     console.log("Room deleted successfully! 😊");
-  //     // Обновить список комнат после успешного удаления
-  //     fetchRooms();
-  //   } catch (error) {
-  //     console.log("Error:", error);
-  //     // Обработать ошибку удаления комнаты
-  //   }
-  // };
-
   const handleFilterChange = (filter, value) => {
     setQueryParams((prevParams) => {
       const newParams = { ...prevParams };
-      if (newParams[filter] === value) {
-        delete newParams[filter];
+      if (filter === "time") {
+        newParams.time = newParams.time === value ? undefined : value;
       } else {
-        newParams[filter] = value;
+        newParams[filter] = value === "" ? undefined : value;
       }
       return newParams;
     });
   };
 
   const handleApplyFilter = () => {
+    console.log("Applying filters:", queryParams);
     fetchOrders(queryParams);
   };
 
@@ -108,7 +55,7 @@ function AddRooms() {
         withCredentials: true,
       });
       console.log("Order deleted successfully! 😊");
-      fetchOrders(queryParams); // Refresh orders after deletion
+      fetchOrders(queryParams);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -119,45 +66,9 @@ function AddRooms() {
   };
 
   const updatePictureList = () => {
-    // Здесь вы можете обновить список картинок
-    // Например, если у вас есть состояние `pictures`, вы можете обновить его следующим образом:
     setPictures(data?.picture);
   };
-  // const handleFileChanges = async (id) => {
-  //   const formData = new FormData();
-  //   formData.append("image", file);
 
-  //   try {
-  //     // Загрузка картинки
-  //     await axios.post(`${url}/room/upload-picture/${id}`, formData, {
-  //       withCredentials: true,
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     });
-
-  //     // Получение обновленных данных комнаты
-  //     const updatedRoomResponse = await axios.get(
-  //       `${url}/room/get-room/${id}`,
-  //       {
-  //         withCredentials: true,
-  //       }
-  //     );
-
-  //     // Обновление состояния с новыми данными комнаты
-  //     setRoomsImg((prevRooms) =>
-  //       prevRooms.map((room) =>
-  //         room.id === id
-  //           ? { ...room, picture: updatedRoomResponse.data.picture }
-  //           : room
-  //       )
-  //     );
-
-  //     // Сброс состояния файла
-  //     setFile(null);
-  //   } catch (error) {
-  //     console.log("Error:", error);
-  //   }
-  // };
-  // Define the variable
   const fileInputRef = useRef(null);
 
   const handleFileChanges = async (id) => {
@@ -169,7 +80,6 @@ function AddRooms() {
     try {
       await updateRoom(id, formData);
 
-      // Fetch the updated room data
       const updatedRoomResponse = await axios.get(
         `${url}/room/get-room/${id}`,
         {
@@ -177,7 +87,6 @@ function AddRooms() {
         }
       );
 
-      // Update the local state
       const updatedRooms = rooms.map((room) =>
         room.id === id
           ? { ...room, picture: updatedRoomResponse.data.picture }
@@ -185,7 +94,6 @@ function AddRooms() {
       );
       useAdminStore.setState({ rooms: updatedRooms });
 
-      // Reset the file state and input value
       setFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -196,215 +104,131 @@ function AddRooms() {
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    fetchOrders(queryParams);
+    const intervalId = setInterval(() => fetchOrders(queryParams), 5000);
 
-  // const fetchOrders = useCallback(async () => {
-  //   try {
-  //     const response = await axios.get(`${url}/order/get-all-orders`, {
-  //       params: queryParams,
-  //       withCredentials: true,
-  //     });
-  //     setOrders(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching orders:", error);
-  //   }
-  // }, [queryParams]);
-
-  useEffect(() => {
-    fetchOrders();
-    const intervalId = setInterval(fetchOrders, 5000); // Fetch orders every 5 seconds
-
-    return () => clearInterval(intervalId); // Clean up on component unmount
-  }, [fetchOrders]);
-
-  // const handleFilterChange = (filter, value) => {
-  //   setQueryParams((prevParams) => {
-  //     const newParams = { ...prevParams };
-
-  //     if (newParams[filter] === value) {
-  //       // Если значение фильтра уже установлено, удалить его
-  //       delete newParams[filter];
-  //     } else {
-  //       // Иначе, установить новое значение фильтра
-  //       newParams[filter] = value;
-  //     }
-
-  //     return newParams;
-  //   });
-  // };
-
-  // const handleFilterReset = () => {
-  //   setQueryParams({});
-  //   fetchOrders(); // Выполнить GET-запрос без фильтров
-  // };
-
-  // const handleApplyFilter = () => {
-  //   fetchOrders(); // Выполнить GET-запрос с применением фильтров
-  // };
-
-  // const handleUpdateOrder = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const response = await axios.put(
-  //       `${url}/order/update-order/${id}`,
-  //       {
-  //         timeStart,
-  //         timeEnd,
-  //       },
-  //       {
-  //         withCredentials: true,
-  //       }
-  //     );
-
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+    return () => clearInterval(intervalId);
+  }, [fetchOrders, queryParams]);
 
   const handleLogout = useLogoutAdmin();
 
-  return (
-    <div className={style.Admin}>
-      <div>
-        <div className={style.sideNavContainer}>
-          <Link to="/CreateRooms">Создание Команты</Link>
-          <Link to="/Admin">Список комнат</Link>
-          <Link to="/DeleteImage">Удаление изображений</Link>
-          <button onClick={handleLogout}>Выйти</button>
-        </div>
-      </div>
-      <div className={style.allRooms}>
-        <div className={style.allRoomsContainer}>
-          <h1
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              fontSize: "30px",
-              paddingBottom: "30px",
-            }}
-          >
-            Список комнат
-          </h1>
-          {rooms?.map((data) => {
-            return (
-              <div className={style.Rooms} key={data.id}>
-                <div className={style.roomSwiper}>
-                  <Swiper
-                    slidesPerView={1}
-                    spaceBetween={30}
-                    loop={true}
-                    pagination={{
-                      clickable: true,
-                    }}
-                    navigation={true}
-                    modules={[Pagination, Navigation]}
-                    className="mySwiper"
-                  >
-                    {data?.picture?.map((img) => {
-                      const imgBlob = new Blob([img.data]);
-                      return (
-                        <SwiperSlide key={img.id}>
-                          <img src={`${url}/${img.name}`} />
-                        </SwiperSlide>
-                      );
-                    })}
-                  </Swiper>
-                </div>
-                <div className={style.roomInfo}>
-                  <div>
-                    <p>Код:{data.id}</p>
-                    <p>Адрес:</p>
-                    <h2>{data.address}</h2>
-                  </div>
+  const formatDateTime = (dateString) => {
+    const date = new Date(dateString);
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-                  <div>
-                    <p>Название:</p>
-                    <h2>{data.name}</h2>
-                  </div>
-                  <div>
-                    <p>Описание:</p>
-                    <h2>{data.description}</h2>
-                  </div>
-                  <h2>Количество мест {data.places}</h2>
-                  <h2>Цена {data.price}р</h2>
-                  <div className={style.uploads}>
-                    <h2>Загрузить фото:</h2>
+    const options = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: userTimeZone,
+    };
+
+    const formattedDate = date.toLocaleDateString("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: userTimeZone,
+    });
+
+    const formattedTime = date.toLocaleTimeString("ru-RU", {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: userTimeZone,
+    });
+
+    return `Дата: ${formattedDate}, Время: ${formattedTime}`;
+  };
+
+  return (
+    <div className={styles.adminContainer}>
+      <nav className={styles.sidebar}>
+        <Link to="/CreateRooms" className={styles.sidebarLink}>Создание Команты</Link>
+        <Link to="/Admin" className={styles.sidebarLink}>Список комнат</Link>
+        <Link to="/DeleteImage" className={styles.sidebarLink}>Удаление изображений</Link>
+        <button onClick={useLogoutAdmin} className={styles.logoutButton}>Выйти</button>
+      </nav>
+
+      <main className={styles.mainContent}>
+        <section className={styles.roomsSection}>
+          <h1 className={styles.sectionTitle}>Список комнат</h1>
+          <div className={styles.roomsGrid}>
+            {rooms?.map((room) => (
+              <div key={room.id} className={styles.roomCard}>
+                <Swiper
+                  slidesPerView={1}
+                  spaceBetween={30}
+                  loop={true}
+                  pagination={{ clickable: true }}
+                  navigation={true}
+                  modules={[Pagination, Navigation]}
+                  className={styles.roomSwiper}
+                >
+                  {room?.picture?.map((img) => (
+                    <SwiperSlide key={img.id}>
+                      <img src={`${url}/${img.name}`} alt={room.name} className={styles.roomImage} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+                <div className={styles.roomInfo}>
+                  <p className={styles.roomId}>Код: {room.id}</p>
+                  <h2 className={styles.roomName}>{room.name}</h2>
+                  <p className={styles.roomAddress}>{room.address}</p>
+                  <p className={styles.roomDescription}>{room.description}</p>
+                  <div className={styles.roomActions}>
                     <input
                       type="file"
                       onChange={uploadFile}
-                      name="inputFile"
                       ref={fileInputRef}
+                      className={styles.fileInput}
                     />
-                    <button onClick={(e) => handleFileChanges(data.id, file)}>
-                      Загрузить
+                    <button onClick={() => handleFileChanges(room.id, file)} className={styles.uploadButton}>
+                      Загрузить фото
                     </button>
-                  </div>
-                  <div className={style.deleteRoom}>
-                    <h2>Удалить комнату</h2>
-                    <button onClick={(e) => deleteRoom(data.id)}>
-                      Удалить
+                    <button onClick={() => deleteRoom(room.id)} className={styles.deleteButton}>
+                      Удалить комнату
                     </button>
                   </div>
                 </div>
               </div>
-            );
-          })}
-          <div className={style.orders}>
-            <h1
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                fontSize: "30px",
-                padding: "30px",
-              }}
-            >
-              Список броней
-            </h1>
+            ))}
+          </div>
+        </section>
 
-            <div className={style.filter}>
-              <div className={style.filterItem}>
-                <h1
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: "30px",
-                  }}
-                >
-                  Фильтрация:
-                </h1>
-                <label>
-                  <input
-                    className={style.checkbox}
-                    type="checkbox"
-                    checked={queryParams.time === "DECREASING"}
-                    onChange={() => handleFilterChange("time", "DECREASING")}
-                  />
-                  Время по убыванию
-                </label>
-                <label>
-                  <input
-                    className={style.checkbox}
-                    type="checkbox"
-                    checked={queryParams.time === "INCREASING"}
-                    onChange={() => handleFilterChange("time", "INCREASING")}
-                  />
-                  Время по возрастанию
-                </label>
+        <section className={styles.ordersSection}>
+          <h1 className={styles.sectionTitle}>Список броней</h1>
+          <div className={styles.filterContainer}>
+            <h2>Фильтрация:</h2>
+            <div className={styles.filterOptions}>
+              <label className={styles.checkboxLabel}>
                 <input
-                  className={style.filterInput}
-                  type="text"
-                  placeholder="Введите номер комнаты"
-                  value={queryParams.roomId || ""}
-                  onChange={(e) => handleFilterChange("roomId", e.target.value)}
+                  type="checkbox"
+                  checked={queryParams.time === "DECREASING"}
+                  onChange={() => handleFilterChange("time", "DECREASING")}
                 />
-              </div>
-              {/* <button onClick={handleFilterReset}>Сбросить фильтр</button> */}
-              <button onClick={handleApplyFilter}>Применить фильтр</button>
+                Время по убыванию
+              </label>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={queryParams.time === "INCREASING"}
+                  onChange={() => handleFilterChange("time", "INCREASING")}
+                />
+                Время по возрастанию
+              </label>
+              <input
+                type="text"
+                placeholder="Введите номер комнаты"
+                value={queryParams.roomId || ""}
+                onChange={(e) => handleFilterChange("roomId", e.target.value)}
+                className={styles.filterInput}
+              />
+              <button onClick={handleApplyFilter} className={styles.applyFilterButton}>Применить фильтр</button>
             </div>
-            <table>
+          </div>
+          <div className={styles.tableContainer}>
+            <table className={styles.ordersTable}>
               <thead>
                 <tr>
                   <th>ФИО</th>
@@ -417,68 +241,29 @@ function AddRooms() {
                 </tr>
               </thead>
               <tbody>
-                {orders?.map((item) => {
-                  const formatDateTime = (dateString) => {
-                    const date = new Date(dateString);
-                    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  
-                    const options = {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      timeZone: userTimeZone
-                    };
-
-                    const formattedDate = date.toLocaleDateString("ru-RU", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      timeZone: userTimeZone
-                    });
-
-                    const formattedTime = date.toLocaleTimeString("ru-RU", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      timeZone: userTimeZone
-                    });
-
-                    return `Дата: ${formattedDate}, Время: ${formattedTime}`;
-                  };
-                  const formattedTimeEnd = formatDateTime(item.timeEnd);
-                  const formattedStart = formatDateTime(item.timeStart);
-                  return (
-                    <tr key={item.id}>
-                      <td>{item.fio}</td>
-                      <td>{item.phoneNumber}</td>
-                      <td>{item.email}</td>
-                      <td>{formattedStart}</td>
-                      <td>{formattedTimeEnd}</td>
-                      <td>Комната номер : {item.roomId}</td>
-                      <td style={{ display: "flex", gap: "10px" }}>
-                        <button
-                          style={{
-                            width: "150px",
-                            padding: "10px",
-                            fontSize: "15px",
-                          }}
-                          onClick={(e) => deleteOrder(item.id)}
-                        >
-                          Удалить бронь
-                        </button>
-                        <Modal id={item.id} />
-                      </td>
-                    </tr>
-                  );
-                })}
+                {orders?.map((order) => (
+                  <tr key={order.id}>
+                    <td>{order.fio}</td>
+                    <td>{order.phoneNumber}</td>
+                    <td>{order.email}</td>
+                    <td>{formatDateTime(order.timeStart)}</td>
+                    <td>{formatDateTime(order.timeEnd)}</td>
+                    <td>Комната номер: {order.roomId}</td>
+                    <td className={styles.orderActions}>
+                      <button onClick={() => deleteOrder(order.id)} className={styles.deleteOrderButton}>
+                        Удалить бронь
+                      </button>
+                      <Modal id={order.id} />
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 }
 
-export default AddRooms;
+export default Admin;

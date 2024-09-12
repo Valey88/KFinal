@@ -89,9 +89,9 @@ const Booking = () => {
                 <p>Количество мест {data.places}</p>
                 <p>Начало работы: {formatTime(data.timeStart)}</p>
                 <p>Конец работы: {formatTime(data.timeEnd)}</p>
-                <div>
+                <div className={style.orderButton}>
                   <Modal id={data.id} />
-                  <RoomCalendar roomId={selectedRoomId} />
+                  <RoomCalendar className={style.RoomCalendar} roomId={selectedRoomId} />
                 </div>
               </div>
             </div>

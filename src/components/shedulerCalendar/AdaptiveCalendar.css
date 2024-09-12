@@ -14,9 +14,35 @@
 .Cell-dayOfWeek {
   font-size: 20px !important;
 }
+.HorizontalAppointment-title {
+  font-size: 1.35rem !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.css-1gctmkv-MuiButtonBase-root-MuiButton-root {
+  font-size: 2rem !important;
+}
+.MuiTypography-h6 {
+  font-size: 3rem !important;
+}
+.MuiTypography-body1{
+  font-size: 1.7rem !important;
+
+}
 
 @media (max-width: 600px) {
   .dx-scheduler-navigator {
     flex-direction: column;
+  }
+  .HorizontalAppointment-title {
+    font-size: 1rem !important;
+  }
+  .MuiTypography-h6 {
+    font-size: 2rem !important;
+  }
+  .MuiTypography-body1{
+    font-size: 1.4rem !important;
+  
   }
 }

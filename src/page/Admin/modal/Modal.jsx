@@ -7,9 +7,11 @@ import { useState } from "react";
 // import { usePostOrdersMutation } from "../../../redux/dataApi";
 import styles from "./Modal.module.css";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { url } from "../../../constants/constants";
+import useAdminStore from "../../../store/adminStore";
+import { ToastContainer, toast } from "react-toastify";
+
 
 const style = {
   position: "absolute",
@@ -42,29 +44,43 @@ const style = {
 };
 
 export default function BasicModal({ id }) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [orderId, setOrderId] = useState(id);
   const [timeStart, setTimeStart] = useState("");
   const [timeEnd, setTimeEnd] = useState("");
+  const { updateOrder } = useAdminStore();
 
-  const handleUpdateOrder = async (e) => {
+
+  const handleUpdateOrder = async () => {
     try {
-      const response = await axios.put(
-        `${url}/order/update-order/${orderId}`,
-        {
-          timeStart,
-          timeEnd,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      // Format the dates to ISO string format
+      const formattedTimeStart = new Date(timeStart).toISOString();
+      const formattedTimeEnd = new Date(timeEnd).toISOString();
 
-      console.log(response.data);
+      await updateOrder(orderId, formattedTimeStart, formattedTimeEnd);
+
+      toast.success("Время успешно изменено!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      handleClose(); // Close the modal after successful update
     } catch (error) {
-      console.error(error);
+      console.error("Error updating order:", error);
+      toast.error("Ошибка при изменении времени", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 

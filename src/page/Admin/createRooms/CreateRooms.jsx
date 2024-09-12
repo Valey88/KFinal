@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useRoomStore from "../../../store/roomStore";
-//используемые хуки
 
 const CreateRooms = () => {
   const {
@@ -26,78 +25,77 @@ const CreateRooms = () => {
     addNewRoom,
   } = useRoomStore();
 
-  //верстка
-
   return (
-    <div className={style.CreateRooms}>
-      <div>
-        <div className={style.sideNavContainer}>
-          <Link to="/CreateRooms">Создание Команты</Link>
-          <Link to="/Admin">Список комнат</Link>
-          <Link to="/DeleteImage">Удаление изображений</Link>
-        </div>
-      </div>
-      <div className={style.AddRoomsHead}>
-        <h1>Создание комнаты</h1>
-      </div>
-      <div className={style.AddRooms}>
-        <div className={style.container}>
+    <div className={style.createRoomsPage}>
+      <nav className={style.sideNav}>
+        <Link to="/CreateRooms" className={style.navLink}>Создание Комнаты</Link>
+        <Link to="/Admin" className={style.navLink}>Список комнат</Link>
+        <Link to="/DeleteImage" className={style.navLink}>Удаление изображений</Link>
+      </nav>
+      
+      <main className={style.mainContent}>
+        <h1 className={style.pageTitle}>Создание комнаты</h1>
+        
+        <form className={style.roomForm}>
           <input
             type="text"
-            placeholder="Адресс"
+            placeholder="Адрес"
             onChange={(e) => setAddress(e.target.value)}
-            className={style.inputAddRooms}
+            className={style.formInput}
           />
           <input
             type="text"
             placeholder="Название"
             onChange={(e) => setName(e.target.value)}
-            className={style.inputAddRooms}
+            className={style.formInput}
           />
           <textarea
-            type="text"
             placeholder="Описание"
             onChange={(e) => setDescription(e.target.value)}
-            className={style.textareaAddRooms}
+            className={style.formTextarea}
           />
           <input
-            type="text"
+            type="number"
             placeholder="Количество мест"
             onChange={(e) => setPlaces(+e.target.value)}
-            className={style.inputAddRooms}
+            className={style.formInput}
           />
-          <h2 style={{ fontSize: 18 }}>
-            Выберите дни недели, которые комната будет работать:
-          </h2>
-          <div className={style.weekDaysContainer}>
+          
+          <h2 className={style.sectionTitle}>Выберите дни работы комнаты:</h2>
+          <div className={style.weekDaysGrid}>
             {weeks.map(({ day }) => (
-              <div key={day} className={style.weekDaysItem}>
+              <label key={day} className={style.weekDayLabel}>
                 <input
-                  className={style.inputCheckbox}
                   type="checkbox"
                   checked={weekDays.includes(day)}
                   onChange={() => setWeekDays(day)}
+                  className={style.weekDayCheckbox}
                 />
-                {day}
-              </div>
+                <span>{day}</span>
+              </label>
             ))}
           </div>
-          <input
-            type="text"
-            placeholder="Начало работы"
-            onChange={(e) => setTimeStart(e.target.value)}
-            className={style.inputAddRooms}
-          />
-          <input
-            type="text"
-            placeholder="Конец работы"
-            onChange={(e) => setTimeEnd(e.target.value)}
-            className={style.inputAddRooms}
-          />
-          <button onClick={addNewRoom}>Создать</button>
-          <ToastContainer />
-        </div>
-      </div>
+          
+          <div className={style.timeInputs}>
+            <input
+              type="time"
+              placeholder="Начало работы"
+              onChange={(e) => setTimeStart(e.target.value)}
+              className={style.formInput}
+            />
+            <input
+              type="time"
+              placeholder="Конец работы"
+              onChange={(e) => setTimeEnd(e.target.value)}
+              className={style.formInput}
+            />
+          </div>
+          
+          <button onClick={addNewRoom} className={style.submitButton}>Создать комнату</button>
+        </form>
+      </main>
+      
+      <ToastContainer position="bottom-right" />
     </div>
   );
 };

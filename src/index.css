@@ -42,6 +42,16 @@ button {
   color: #fff;
   border-radius: 0.5rem;
   font-size: 2rem;
+  border-inline: none;
+}
+.open-calendar-btn {
+  width: 24rem;
+  height: 6rem;
+  border: none;
+  background-color: #3b90fb;
+  color: #fff;
+  border-radius: 0.5rem;
+  font-size: 2rem;
 }
 
 body {
