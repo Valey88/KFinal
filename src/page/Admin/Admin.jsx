@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
 import axios from "axios";
 import useAdminStore from "../../store/adminStore";
 import Modal from "./modal/Modal";
@@ -11,6 +9,10 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../../page/Booking/Sliders/styles.css";
 import styles from "./Admin.module.css";
+import { Carousel } from "react-bootstrap"; // Импорт Carousel из react-bootstrap
+
+// Import Bootstrap CSS and JS
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function Admin() {
   const [file, setFile] = useState(null);
@@ -24,14 +26,13 @@ function Admin() {
     updateRoom,
     queryParams,
     setQueryParams,
-    useLogoutAdmin
+    useLogoutAdmin,
   } = useAdminStore();
 
   useEffect(() => {
     fetchRooms();
     fetchOrders(queryParams);
   }, [queryParams]);
-
   const handleFilterChange = (filter, value) => {
     setQueryParams((prevParams) => {
       const newParams = { ...prevParams };
@@ -144,10 +145,18 @@ function Admin() {
   return (
     <div className={styles.adminContainer}>
       <nav className={styles.sidebar}>
-        <Link to="/CreateRooms" className={styles.sidebarLink}>Создание Команты</Link>
-        <Link to="/Admin" className={styles.sidebarLink}>Список комнат</Link>
-        <Link to="/DeleteImage" className={styles.sidebarLink}>Удаление изображений</Link>
-        <button onClick={useLogoutAdmin} className={styles.logoutButton}>Выйти</button>
+        <Link to="/CreateRooms" className={styles.sidebarLink}>
+          Создание Команты
+        </Link>
+        <Link to="/Admin" className={styles.sidebarLink}>
+          Основная панель
+        </Link>
+        <Link to="/DeleteImage" className={styles.sidebarLink}>
+          Удаление изображений
+        </Link>
+        <button onClick={handleLogout} className={styles.logoutButton}>
+          Выйти
+        </button>
       </nav>
 
       <main className={styles.mainContent}>
@@ -156,21 +165,42 @@ function Admin() {
           <div className={styles.roomsGrid}>
             {rooms?.map((room) => (
               <div key={room.id} className={styles.roomCard}>
-                <Swiper
-                  slidesPerView={1}
-                  spaceBetween={30}
-                  loop={true}
-                  pagination={{ clickable: true }}
-                  navigation={true}
-                  modules={[Pagination, Navigation]}
-                  className={styles.roomSwiper}
-                >
-                  {room?.picture?.map((img) => (
-                    <SwiperSlide key={img.id}>
-                      <img src={`${url}/${img.name}`} alt={room.name} className={styles.roomImage} />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                <div className={styles.roomImg}>
+                  <Carousel>
+                    {room?.picture?.length > 0 ? (
+                      room.picture.map((img) => (
+                        <Carousel.Item
+                          style={{ width: "100%", height: "60rem" }}
+                          key={img.id}
+                        >
+                          <img
+                            className="d-block"
+                            src={`${url}/${img.name}`}
+                            alt={img.name}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover", // Добавлено для масштабирования
+                            }}
+                          />
+                        </Carousel.Item>
+                      ))
+                    ) : (
+                      <Carousel.Item>
+                        <img
+                          className="d-block w-100"
+                          src="default-image.jpg"
+                          alt="No image available"
+                          style={{
+                            width: "100%",
+                            height: "auto",
+                            objectFit: "cover", // Добавлено для масштабирования
+                          }}
+                        />
+                      </Carousel.Item>
+                    )}
+                  </Carousel>
+                </div>
                 <div className={styles.roomInfo}>
                   <p className={styles.roomId}>Код: {room.id}</p>
                   <h2 className={styles.roomName}>{room.name}</h2>
@@ -183,10 +213,16 @@ function Admin() {
                       ref={fileInputRef}
                       className={styles.fileInput}
                     />
-                    <button onClick={() => handleFileChanges(room.id, file)} className={styles.uploadButton}>
+                    <button
+                      onClick={() => handleFileChanges(room.id, file)}
+                      className={styles.uploadButton}
+                    >
                       Загрузить фото
                     </button>
-                    <button onClick={() => deleteRoom(room.id)} className={styles.deleteButton}>
+                    <button
+                      onClick={() => deleteRoom(room.id)}
+                      className={styles.deleteButton}
+                    >
                       Удалить комнату
                     </button>
                   </div>
@@ -224,7 +260,12 @@ function Admin() {
                 onChange={(e) => handleFilterChange("roomId", e.target.value)}
                 className={styles.filterInput}
               />
-              <button onClick={handleApplyFilter} className={styles.applyFilterButton}>Применить фильтр</button>
+              <button
+                onClick={handleApplyFilter}
+                className={styles.applyFilterButton}
+              >
+                Применить фильтр
+              </button>
             </div>
           </div>
           <div className={styles.tableContainer}>
@@ -250,7 +291,10 @@ function Admin() {
                     <td>{formatDateTime(order.timeEnd)}</td>
                     <td>Комната номер: {order.roomId}</td>
                     <td className={styles.orderActions}>
-                      <button onClick={() => deleteOrder(order.id)} className={styles.deleteOrderButton}>
+                      <button
+                        onClick={() => deleteOrder(order.id)}
+                        className={styles.deleteOrderButton}
+                      >
                         Удалить бронь
                       </button>
                       <Modal id={order.id} />

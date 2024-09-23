@@ -109,7 +109,9 @@ const AdaptiveCalendar = ({ roomId }) => {
   const [selectedBookings, setSelectedBookings] = useState([]);
 
   useEffect(() => {
-    fetchBookings();
+    if (roomId) {
+      fetchBookings();
+    }
   }, [roomId]);
 
   const fetchBookings = async () => {
@@ -121,6 +123,7 @@ const AdaptiveCalendar = ({ roomId }) => {
         startDate: new Date(booking.timeStart),
         endDate: new Date(booking.timeEnd),
         title: "Бронь",
+        fio: booking.fio, // Добавляем поле fio
       }));
       setBookings(formattedBookings);
     } catch (error) {
@@ -179,14 +182,15 @@ const AdaptiveCalendar = ({ roomId }) => {
         }}
       >
         <Typography id="bookings-modal-title" variant="h6" component="h2">
-          Бронь на {selectedBookings[0]?.startDate.getDate()}{" "}
+          Брони на {selectedBookings[0]?.startDate.getDate()}{" "}
           {russianMonths[selectedBookings[0]?.startDate.getMonth()]}{" "}
           {selectedBookings[0]?.startDate.getFullYear()}
         </Typography>
         {selectedBookings.map((booking, index) => (
           <Typography key={index}>
             {moment(booking.startDate).format("HH:mm")} -{" "}
-            {moment(booking.endDate).format("HH:mm")}
+            {moment(booking.endDate).format("HH:mm")} {booking.fio}{" "}
+            {/* Отображаем поле fio */}
           </Typography>
         ))}
       </Box>

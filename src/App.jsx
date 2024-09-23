@@ -14,6 +14,7 @@ import Booking from "./page/Booking/Booking";
 import CreateRooms from "./page/Admin/createRooms/CreateRooms";
 import DeleteImage from "./page/Admin/deleteRoomsImage/DeleteImage";
 import Auth from "./page/Admin/Auth/Auth";
+import adminStore from "./store/adminStore";
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -33,6 +34,13 @@ const checkUserAuth = () => {
 
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const checkUserRole = adminStore((state) => state.checkUserRole);
+
+  useEffect(() => {
+    checkUserRole();
+  }, [checkUserRole]);
+
+  const youAdmin = adminStore((state) => state.userRole) === "Admin";
 
   useEffect(() => {
     const authStatus = checkUserAuth();

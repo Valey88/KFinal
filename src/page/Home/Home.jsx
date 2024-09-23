@@ -1,7 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 import style from "./Home.module.css";
 import { Link } from "react-router-dom";
-import { useGetOrdersQuery, useGetRoomsQuery } from "../../redux/dataApi";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
   Navigation,
@@ -18,16 +17,30 @@ import "swiper/css/pagination";
 
 import "../../components/slider/styles.module.css";
 
+// Import images
+import frame1 from "/public/Frame 1.svg";
+import img1 from "/public/91a921c4084d1fd7cf2fd71448204ba0.png";
+import img2 from "/public/334da5cbc12dd2240ba010c4baaad71a.png";
+import maskGroup1 from "/public/Mask Group.png";
+import maskGroup2 from "/public/Mask Group (1).png";
+import eventImg from "/public/event.png";
+import wifiImg from "/public/wifi (1).png";
+import internetImg from "/public/internet.png";
+import armchairImg from "/public/armchair.png";
+import locationImg from "/public/Group 119 (1).png";
+import roomImg from "/public/5dbe0854c979505c52a7d4440969ab4e.png";
+
+import { YMaps, Map, Placemark } from "react-yandex-maps";
+
 const Home = () => {
   // const []
-  
+
   return (
     <div className={style.Home}>
       <div className={style.CmpOne}>
         <div className={style.contentOne} id="onas">
-          
           <div>
-            <img src="/public/Frame 1.svg" alt="" />
+            <img src={frame1} alt="" loading="lazy" />
           </div>
           <h2>Выбирай лучшее места коворкинга в городе</h2>
           <Link to="/Booking" className={style.Link}>
@@ -35,12 +48,12 @@ const Home = () => {
           </Link>
         </div>
         <div className={style.contentOne2}>
-          <img src="/public/91a921c4084d1fd7cf2fd71448204ba0.png" alt="" />
+          <img src={img1} alt="" loading="lazy" />
         </div>
       </div>
       <div className={style.component}>
         <div className={style.content_component2}>
-          <img src="/public/334da5cbc12dd2240ba010c4baaad71a.png" alt="" />
+          <img src={img2} alt="" loading="lazy" />
         </div>
         <div className={style.content_component}>
           <h2>Самые удобные пространства</h2>
@@ -86,10 +99,10 @@ const Home = () => {
             className="mySwiper"
           >
             <SwiperSlide>
-              <img src="/public/Mask Group.png" alt="" />
+              <img src={maskGroup1} alt="" loading="lazy" />
             </SwiperSlide>
             <SwiperSlide>
-              <img src="/public/Mask Group (1).png" alt="" />
+              <img src={maskGroup2} alt="" loading="lazy" />
             </SwiperSlide>
           </Swiper>
         </div>
@@ -101,7 +114,7 @@ const Home = () => {
           <div className={style.content_components}>
             <div className={style.contents}>
               <div>
-                <img src="/public/event.png" alt="" />
+                <img src={eventImg} alt="" loading="lazy" />
               </div>
               <h3> Мероприятия</h3>
               <p>
@@ -111,7 +124,7 @@ const Home = () => {
             </div>
             <div className={style.contents}>
               <div>
-                <img src="/public/wifi (1).png" alt="" />
+                <img src={wifiImg} alt="" loading="lazy" />
               </div>
               <h3>Быстрый интернет</h3>
               <p>
@@ -121,7 +134,7 @@ const Home = () => {
             </div>
             <div className={style.contents}>
               <div>
-                <img src="/public/internet.png" alt="" />
+                <img src={internetImg} alt="" loading="lazy" />
               </div>
               <h3>Доступность</h3>
               <p>
@@ -131,7 +144,7 @@ const Home = () => {
             </div>
             <div className={style.contents}>
               <div>
-                <img src="/public/armchair.png" alt="" />
+                <img src={armchairImg} alt="" loading="lazy" />
               </div>
               <h3>Лаундж</h3>
               <p>
@@ -145,7 +158,7 @@ const Home = () => {
       <div className={style.component4}>
         <h2>Помещения</h2>
         <div className={style.content_component6}>
-          <img src="/public/5dbe0854c979505c52a7d4440969ab4e.png" alt="" />
+          <img src={roomImg} alt="" loading="lazy" />
         </div>
         <div className={style.content_component7}>
           <div>
@@ -171,8 +184,16 @@ const Home = () => {
             <h3>Местоположение</h3>
             <p>Оренбург, Советская улица, 6</p>
           </div>
-          <div>
-            <img src="/public/Group 119 (1).png" alt="" />
+          <div className={style.mapContainer}>
+            <YMaps>
+              <Map
+                defaultState={{ center: [51.756253, 55.10584], zoom: 15 }}
+                width="100%"
+                height="400px"
+              >
+                <Placemark geometry={[51.756253, 55.10584]} />
+              </Map>
+            </YMaps>
           </div>
         </div>
       </div>
@@ -195,4 +216,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default memo(Home);

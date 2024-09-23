@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import style from "./Booking.module.css";
-import { Swiper, SwiperSlide } from "swiper/react";
 import Modal from "./modal/Modal";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -10,10 +8,13 @@ import "./Sliders/styles.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Sliders/Toast.css";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { url } from "../../constants/constants";
 import useRoomStore from "../../store/roomStore";
 import RoomCalendar from "../../components/shedulerCalendar/roomCalendar/RoomCalendar";
+import { Carousel } from "react-bootstrap"; // Импорт Carousel из react-bootstrap
+
+// Import Bootstrap CSS and JS
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Booking = () => {
   const { rooms, fetchRooms } = useRoomStore();
@@ -31,10 +32,13 @@ const Booking = () => {
     });
   };
 
+  const handleRoomSelect = (roomId) => {
+    console.log("Selected Room ID:", roomId); // Логируем roomId
+    setSelectedRoomId(roomId);
+  };
   useEffect(() => {
     fetchRooms()
       .then(() => {
-        console.log("Rooms fetched:", rooms);
         setLoading(false);
       })
       .catch((error) => {
@@ -58,27 +62,43 @@ const Booking = () => {
           rooms.map((data) => (
             <div className={style.orderBlock} key={data.id}>
               <div className={style.orderBlockImg}>
-                <Swiper
-                  slidesPerView={1}
-                  spaceBetween={30}
-                  autoplay={{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                  }}
-                  loop={true}
-                  pagination={{
-                    clickable: true,
-                  }}
-                  navigation={false}
-                  modules={[Pagination, Navigation, Autoplay]}
-                  className="mySwiper"
-                >
-                  {data?.picture?.map((img) => (
-                    <SwiperSlide key={img.id}>
-                      <img src={`${url}/${img.name}`} alt={data.name} />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                <Carousel>
+                  {data?.picture?.length > 0 ? (
+                    data.picture.map((img) => (
+                      <Carousel.Item
+                        style={{
+                          width: "100%",
+                          height: "60rem",
+                        }}
+                        key={img.id}
+                      >
+                        <img
+                          className="d-block"
+                          src={`${url}/${img.name}`}
+                          alt={data.name}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </Carousel.Item>
+                    ))
+                  ) : (
+                    <Carousel.Item>
+                      <img
+                        className="d-block w-100"
+                        src="default-image.jpg"
+                        alt="No image available"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Carousel.Item>
+                  )}
+                </Carousel>
               </div>
               <div className={style.orderInfo}>
                 <div>
@@ -91,7 +111,11 @@ const Booking = () => {
                 <p>Конец работы: {formatTime(data.timeEnd)}</p>
                 <div className={style.orderButton}>
                   <Modal id={data.id} />
-                  <RoomCalendar className={style.RoomCalendar} roomId={selectedRoomId} />
+                  <RoomCalendar
+                    className={style.RoomCalendar}
+                    roomId={data.id} // Передаем roomId в RoomCalendar
+                    onClick={() => handleRoomSelect(data.id)} // Добавляем обработчик клика
+                  />
                 </div>
               </div>
             </div>

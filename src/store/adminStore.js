@@ -181,5 +181,11 @@ const useAdminStore = create((set, get) => ({
 
     return handleLogout;
   },
+  userRole: null,
+  setUserRole: (role) => set({ userRole: role }),
+  checkUserRole: () => {
+    const role = localStorage.getItem('userRole');
+    set({ userRole: role });
+  },
 }));
 export default useAdminStore;

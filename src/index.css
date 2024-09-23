@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 html {
   scroll-behavior: smooth;
 }
@@ -57,6 +56,12 @@ button {
 body {
   font-family: "inter" serif;
   background-color: #fff;
+  font-size: 2rem;
+}
+@media (max-width: 767px) {
+  body {
+    font-size: 1.5rem;
+  }
 }
 
 /* input {

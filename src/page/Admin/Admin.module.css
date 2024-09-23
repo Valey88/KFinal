@@ -52,7 +52,7 @@
 
 .roomsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr; /* Каждая карточка будет на отдельной строке */
   gap: 20px;
 }
 
@@ -70,6 +70,7 @@
 
 .roomInfo {
   padding: 15px;
+  width: 50%;
 }
 
 .roomName {
@@ -187,4 +188,69 @@
     width: 14rem;
     font-size: 1.5rem;
   }
+  .roomCard {
+    flex-direction: column;
+  }
+  .roomImg {
+    width: 32rem !important;
+  }
+}
+.RoomCard {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.RoomCard .card-body {
+  padding: 1.5rem;
+}
+
+.RoomCard .card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #343a40;
+}
+
+.RoomCard .card-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.RoomCard .card-text {
+  font-size: 0.875rem;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.RoomCard .d-flex {
+  margin-top: 1rem;
+}
+
+.RoomCard .card-title,
+.RoomCard .card-subtitle,
+.RoomCard .card-text {
+  text-align: left;
+}
+
+.carouselCustom img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Масштабирование изображения, сохраняя пропорции */
+}
+
+@media (min-width: 1024px) {
+  /* Assuming 1024px as the breakpoint for PC */
+  .orderBlockImg .carousel-item img {
+    width: 50rem !important;
+    height: 50rem !important;
+  }
+}
+.roomImg {
+  width: 80rem;
+}
+.roomCard {
+  display: flex;
 }
