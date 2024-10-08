@@ -20,15 +20,19 @@ import "../../components/slider/styles.module.css";
 // Import images
 import frame1 from "/public/Frame 1.svg";
 import img1 from "/public/91a921c4084d1fd7cf2fd71448204ba0.png";
-import img2 from "/public/334da5cbc12dd2240ba010c4baaad71a.png";
-import maskGroup1 from "/public/Mask Group.png";
-import maskGroup2 from "/public/Mask Group (1).png";
+import img2 from "/public/52b21197-05f6-4054-b9f4-95d5d760b078.jpg";
+import maskGroup1 from "/public/adc6b44f-97e2-4997-8d10-cb11db5e4fa6.jpg";
+import maskGroup2 from "/public/a24a3dd0-a79f-4f25-b36c-3f47491987ef.jpg";
 import eventImg from "/public/event.png";
 import wifiImg from "/public/wifi (1).png";
 import internetImg from "/public/internet.png";
 import armchairImg from "/public/armchair.png";
 import locationImg from "/public/Group 119 (1).png";
-import roomImg from "/public/5dbe0854c979505c52a7d4440969ab4e.png";
+import roomImg from "/public/4eb86257-5851-4f13-9ae0-b24fd64cae6b.jpg";
+import { Carousel } from "react-bootstrap"; // Импорт Carousel из react-bootstrap
+
+// Import Bootstrap CSS and JS
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import { YMaps, Map, Placemark } from "react-yandex-maps";
 
@@ -83,28 +87,57 @@ const Home = () => {
           </p>
         </div>
         <div className={style.content_component4}>
-          <Swiper
-            slidesPerView={1}
-            spaceBetween={30}
-            loop={true}
-            autoplay={{
-              delay: 2500,
-              disableOnInteraction: false,
-            }}
-            pagination={{
-              clickable: true,
-            }}
-            navigation={false}
-            modules={[Pagination, Navigation, Autoplay]}
-            className="mySwiper"
-          >
-            <SwiperSlide>
-              <img src={maskGroup1} alt="" loading="lazy" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img src={maskGroup2} alt="" loading="lazy" />
-            </SwiperSlide>
-          </Swiper>
+          <Carousel>
+            {/* ... existing Carousel code ... */}
+            <Carousel.Item
+              style={{
+                width: "100%",
+                height: "60rem",
+                maxHeight: "60vh", // Добавлено для мобильных устройств
+              }}
+              key="maskGroup1"
+            >
+              <img
+                className="d-block"
+                src={maskGroup1} // Use the imported image
+                alt="Mask Group 1"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </Carousel.Item>
+            <Carousel.Item
+              style={{
+                width: "100%",
+                height: "60rem",
+                maxHeight: "60vh", // Добавлено для мобильных устройств
+              }}
+              key="maskGroup2"
+            >
+              <img
+                className="d-block"
+                src={maskGroup2} // Use the imported image
+                alt="Mask Group 2"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+              <img
+                className="d-block w-100"
+                src="default-image.jpg"
+                alt="No image available"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </Carousel.Item>
+          </Carousel>
         </div>
       </div>
       <div className={style.component3}>
@@ -190,6 +223,10 @@ const Home = () => {
                 defaultState={{ center: [51.756253, 55.10584], zoom: 15 }}
                 width="100%"
                 height="400px"
+                options={{ 
+                  autoFitToViewport: true, // Добавлено для адаптивности
+                  suppressMapOpenBlock: true // Скрыть блок открытия карты
+                }}
               >
                 <Placemark geometry={[51.756253, 55.10584]} />
               </Map>
