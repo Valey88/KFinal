@@ -1,7 +1,25 @@
 .dx-scheduler-appointment-content {
   padding: 5px;
 }
-
+.title {
+  font-size: 2rem;
+  color: black;
+  display: flex;
+  text-align: center;
+}
+.css-1q1u3t4-MuiTableRow-root {
+  height: max-content !important;
+}
+.css-1m9c8oy-MuiTableCell-root .Cell-text {
+  padding: 0 !important;
+  padding-top: 0 !important;
+  text-align: left !important;
+}
+.Cell-today {
+  margin-top: 0 !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
 .dx-scheduler-appointment-content:hover::after {
   content: attr(title);
   position: absolute;
@@ -26,9 +44,8 @@
 .MuiTypography-h6 {
   font-size: 3rem !important;
 }
-.MuiTypography-body1{
+.MuiTypography-body1 {
   font-size: 1.7rem !important;
-
 }
 
 @media (max-width: 600px) {
@@ -41,8 +58,13 @@
   .MuiTypography-h6 {
     font-size: 2rem !important;
   }
-  .MuiTypography-body1{
+  .MuiTypography-body1 {
     font-size: 1.4rem !important;
-  
+  }
+  .title {
+    font-size: 0.9rem;
+    color: black;
+    display: flex;
+    text-align: center;
   }
 }

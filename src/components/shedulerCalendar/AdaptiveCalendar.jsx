@@ -50,6 +50,7 @@ const CustomTimeTableCell = ({ ...restProps }) => {
       {...restProps}
       style={{
         fontSize: isDesktop ? "3rem" : "1.5rem",
+        height: 300,
         ...restProps.style,
       }}
     />
@@ -122,7 +123,12 @@ const AdaptiveCalendar = ({ roomId }) => {
       const formattedBookings = response.data.map((booking) => ({
         startDate: new Date(booking.timeStart),
         endDate: new Date(booking.timeEnd),
-        title: "Бронь",
+        title: (
+          <span className="title">
+            {moment(booking.timeStart).format("HH:mm")} -
+            {moment(booking.timeEnd).format("HH:mm")}
+          </span>
+        ),
         fio: booking.fio, // Добавляем поле fio
       }));
       setBookings(formattedBookings);
@@ -142,24 +148,63 @@ const AdaptiveCalendar = ({ roomId }) => {
 
   const CustomAppointment = ({ children, style, data, ...restProps }) => {
     const isDesktop = useMediaQuery("(min-width:768px)");
+    const [isHovered, setIsHovered] = useState(false);
+    const [showMore, setShowMore] = useState(false);
+
+    let limitedBookings = [];
+    let hiddenBookings = [];
+
+    if (Array.isArray(data)) {
+      limitedBookings = data.slice(0, 4);
+      hiddenBookings = data.slice(4);
+    }
+
     return (
-      <Appointments.Appointment
-        {...restProps}
-        style={{
-          ...style,
-          ...restProps.style,
-          backgroundColor: "#ff4d4d",
-          borderRadius: "8px",
-          cursor: "pointer",
-          width: isDesktop ? "60%" : "100%",
-          height: isDesktop ? "20px" : "100%",
-          marginTop: "2.5px",
-          fontSize: isDesktop ? "3rem" : "1.5rem",
-        }}
-        onClick={() => handleAppointmentClick(data)}
+      <div
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        {children}
-      </Appointments.Appointment>
+        <Appointments.Appointment
+          {...restProps}
+          style={{
+            ...style,
+            ...restProps.style,
+            backgroundColor: "#f59c33",
+            borderRadius: "8px",
+            cursor: "pointer",
+            width: isDesktop ? "100%" : "100%",
+            height: isDesktop ? "25px" : "100%",
+            marginBottom: "5.5px",
+            fontSize: isDesktop ? "3rem" : "1.5rem",
+          }}
+          onClick={() => handleAppointmentClick(data)}
+        >
+          {children}
+        </Appointments.Appointment>
+        {isHovered && (
+          <div className="appointment-details">
+            {limitedBookings.map((booking, index) => (
+              <div key={index}>
+                {moment(booking.startDate).format("HH:mm")} -{" "}
+                {moment(booking.endDate).format("HH:mm")} {booking.fio}
+              </div>
+            ))}
+            {hiddenBookings.length > 0 && (
+              <button onClick={() => setShowMore(true)}>Показать еще</button>
+            )}
+            {showMore && (
+              <div>
+                {hiddenBookings.map((booking, index) => (
+                  <div key={index}>
+                    {moment(booking.startDate).format("HH:mm")} -{" "}
+                    {moment(booking.endDate).format("HH:mm")} {booking.fio}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     );
   };
 
@@ -186,13 +231,14 @@ const AdaptiveCalendar = ({ roomId }) => {
           {russianMonths[selectedBookings[0]?.startDate.getMonth()]}{" "}
           {selectedBookings[0]?.startDate.getFullYear()}
         </Typography>
-        {selectedBookings.map((booking, index) => (
-          <Typography key={index}>
-            {moment(booking.startDate).format("HH:mm")} -{" "}
-            {moment(booking.endDate).format("HH:mm")} {booking.fio}{" "}
-            {/* Отображаем поле fio */}
-          </Typography>
-        ))}
+        <div>
+          {selectedBookings.map((booking, index) => (
+            <div key={index}>
+              {moment(booking.startDate).format("HH:mm")} -{" "}
+              {moment(booking.endDate).format("HH:mm")} {booking.fio}
+            </div>
+          ))}
+        </div>
       </Box>
     </Modal>
   );
@@ -201,7 +247,7 @@ const AdaptiveCalendar = ({ roomId }) => {
     <Paper>
       <Scheduler
         data={bookings}
-        height={600}
+        height={650}
         locale="ru-RU"
         className="custom-scheduler"
       >
