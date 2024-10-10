@@ -28,14 +28,20 @@ const CreateRooms = () => {
   return (
     <div className={style.createRoomsPage}>
       <nav className={style.sideNav}>
-        <Link to="/CreateRooms" className={style.navLink}>Создание Комнаты</Link>
-        <Link to="/Admin" className={style.navLink}>Список комнат</Link>
-        <Link to="/DeleteImage" className={style.navLink}>Удаление изображений</Link>
+        <Link to="/CreateRooms" className={style.navLink}>
+          Создание Комнаты
+        </Link>
+        <Link to="/Admin" className={style.navLink}>
+          Основная панель
+        </Link>
+        <Link to="/DeleteImage" className={style.navLink}>
+          Удаление изображений
+        </Link>
       </nav>
-      
+
       <main className={style.mainContent}>
         <h1 className={style.pageTitle}>Создание комнаты</h1>
-        
+
         <form className={style.roomForm}>
           <input
             type="text"
@@ -60,7 +66,7 @@ const CreateRooms = () => {
             onChange={(e) => setPlaces(+e.target.value)}
             className={style.formInput}
           />
-          
+
           <h2 className={style.sectionTitle}>Выберите дни работы комнаты:</h2>
           <div className={style.weekDaysGrid}>
             {weeks.map(({ day }) => (
@@ -75,7 +81,7 @@ const CreateRooms = () => {
               </label>
             ))}
           </div>
-          
+
           <div className={style.timeInputs}>
             <input
               type="time"
@@ -90,11 +96,13 @@ const CreateRooms = () => {
               className={style.formInput}
             />
           </div>
-          
-          <button onClick={addNewRoom} className={style.submitButton}>Создать комнату</button>
+
+          <button onClick={addNewRoom} className={style.submitButton}>
+            Создать комнату
+          </button>
         </form>
       </main>
-      
+
       <ToastContainer position="bottom-right" />
     </div>
   );

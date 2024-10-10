@@ -15,6 +15,7 @@ import CreateRooms from "./page/Admin/createRooms/CreateRooms";
 import DeleteImage from "./page/Admin/deleteRoomsImage/DeleteImage";
 import Auth from "./page/Admin/Auth/Auth";
 import adminStore from "./store/adminStore";
+import EditRoom from "./page/Admin/editRoom/editRoom";
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -86,6 +87,14 @@ function App() {
     {
       path: "/deleteImage",
       element: isAdmin ? <DeleteImage /> : <Navigate to="/deleteImage" />,
+    },
+    {
+      path: "/editRoom/:id",
+      element: isAdmin ? (
+        <EditRoom />
+      ) : (
+        <div>У вас нет доступа к данной странице</div>
+      ),
     },
   ];
 

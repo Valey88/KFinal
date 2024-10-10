@@ -9,7 +9,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../../page/Booking/Sliders/styles.css";
 import styles from "./Admin.module.css";
-import { Carousel } from "react-bootstrap"; // Импорт Carousel из react-bootstrap
+import { Carousel } from "react-bootstrap";
 
 // Import Bootstrap CSS and JS
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -224,6 +224,14 @@ function Admin() {
                       className={styles.deleteButton}
                     >
                       Удалить комнату
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.location.href = `/editRoom/${room.id}`;
+                      }}
+                    >
+                      Редактировать комнату
                     </button>
                   </div>
                 </div>

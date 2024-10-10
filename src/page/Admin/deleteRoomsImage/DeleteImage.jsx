@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { url } from "../../../constants/constants";
 import style from "./DeleteImage.module.css";
-import useRoomStore from '../../../stores/roomStore';
+import useRoomStore from "../../../stores/roomStore";
 
 const DeleteImage = () => {
   const { rooms, fetchRooms, deletePicture } = useRoomStore();
@@ -19,7 +19,7 @@ const DeleteImage = () => {
     <div className={style.deleteImagePage}>
       <nav className={style.sideNav}>
         <Link to="/CreateRooms">Создание Комнаты</Link>
-        <Link to="/Admin">Список комнат</Link>
+        <Link to="/Admin">Основная панель</Link>
         <Link to="/DeleteImage">Удаление изображений</Link>
       </nav>
       <main className={style.mainContent}>
@@ -31,8 +31,12 @@ const DeleteImage = () => {
               <div className={style.imageGrid}>
                 {room?.picture?.map((img) => (
                   <div className={style.imageContainer} key={img.name}>
-                    <img src={`${url}/${img.name}`} alt={room.name} className={style.roomImage} />
-                    <button 
+                    <img
+                      src={`${url}/${img.name}`}
+                      alt={room.name}
+                      className={style.roomImage}
+                    />
+                    <button
                       className={style.deleteButton}
                       onClick={() => handleDeletePicture(room.id, img.name)}
                     >
