@@ -289,6 +289,9 @@
   .content_component7 {
     width: 35rem;
   }
+  .component5 {
+    padding: 0;
+  }
 }
 @media (max-width: 500px) {
   .contents h3 {
@@ -324,8 +327,9 @@
   .content_component6 {
     width: 25rem;
   }
-  .content_component8 img {
-    display: none;
+  .content_component8 {
+    display: flex;
+    flex-direction: column;
   }
 }
 .mapContainer {
@@ -333,11 +337,17 @@
   height: 300px;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .mapContainer {
     height: 200px;
   }
-}
+  [class*="ymaps-2-1-79-map"] {
+    width: 300px !important;
+  }
+  [class*="ymaps-2-1-79-map ymaps-2-1-79-i-ua_js_yes ymaps-2-1-79-map-bg ymaps-2-1-79-islets_map-lang-ru"] {
+    width: 300px !important;
+  }
+} */
 [class*="ymaps-2-1-79-copyright ymaps-2-1-79-copyright_logo"] {
   display: none !important;
 }

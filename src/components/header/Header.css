@@ -48,7 +48,21 @@
   color: #3b90fb;
   font-size: 18px;
 }
+.headerNav {
+  position: fixed; /* Фиксированное положение */
+  top: 0;
+  left: -100%; /* Скрыть за пределами экрана */
+  width: 100%; /* Ширина 100% */
+  height: 100vh; /* Высота на весь экран */
+  background-color: #fff; /* Фоновый цвет */
+  transition: right 0.3s ease; /* Плавный переход */
+  overflow-x: hidden; /* Скрыть горизонтальный скролл */
+  z-index: 1000;
+}
 
+.headerNav.active {
+  left: 0; /* Показывать меню при активном состоянии */
+}
 @media (max-width: 768px) {
   .headerMenu {
     display: block;
@@ -56,7 +70,7 @@
 
   .headerNav {
     position: absolute;
-    top: 60px;
+    top: 89px;
     right: 0;
     background-color: #fff;
     width: 200px;
